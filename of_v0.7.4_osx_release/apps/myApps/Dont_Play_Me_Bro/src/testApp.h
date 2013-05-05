@@ -1,6 +1,8 @@
 #pragma once
 
 #include "ofMain.h"
+#include "player.h"
+#include "enemy_grunt.h"
 
 class testApp : public ofBaseApp{
 
@@ -21,5 +23,8 @@ class testApp : public ofBaseApp{
 		
     float xPos, yPos;
     bool moveR, moveL;
+    
+    player player;
+    enemy_grunt grunt;
     
 };

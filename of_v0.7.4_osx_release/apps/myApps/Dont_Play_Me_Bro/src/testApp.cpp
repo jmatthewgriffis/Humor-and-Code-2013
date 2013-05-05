@@ -3,9 +3,8 @@
 //--------------------------------------------------------------
 void testApp::setup(){
     
-    ofNoFill();
-    xPos = 0;
-    yPos = 0;
+    grunt.setup();
+    player.setup();
     
 }
 
@@ -14,6 +13,9 @@ void testApp::update(){
     
     if (moveL) xPos--;
     if (moveR) xPos++;
+    
+    grunt.update();
+    player.update();
     
 }
 
@@ -24,39 +26,90 @@ void testApp::draw(){
     ofPushMatrix();
     ofTranslate(xPos, yPos);
     ofLine(0, ofGetHeight()/2+50, ofGetWidth(), ofGetHeight()/2+50);
-    ofCircle(ofGetWidth()/2-100, ofGetHeight()/2+25, 25);
+    grunt.draw();
     ofPopMatrix();
-    ofRect(ofGetWidth()/2, ofGetHeight()/2, 50, 50);
+    
+    player.draw();
     
 }
 
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
     
-    switch(key) {
+    // Enable movement on keyPress:
+    /*switch (key) {
+        case 'w':
+        case 'W':
+        case OF_KEY_UP:
+            player.moveUP = true;
+            break;
+            
         case 'a':
-            moveL = true;
+        case 'A':
+        case OF_KEY_LEFT:
+            player.moveLEFT = true;
+            break;
+            
+        case 's':
+        case 'S':
+        case OF_KEY_DOWN:
+            player.moveDOWN = true;
             break;
             
         case 'd':
-            moveR = true;
+        case 'D':
+        case OF_KEY_RIGHT:
+            player.moveRIGHT = true;
             break;
-    }
+            
+            // Restart the game:
+        case 'r':
+            setup();
+            break;
+            
+            // Debug. Comment this out later.
+        case 'g':
+        case 'G':
+            player.ghost = true;
+            break;
+    }*/
     
 }
 
 //--------------------------------------------------------------
 void testApp::keyReleased(int key){
     
-    switch(key) {
+    // Disable movement on keyRelease:
+    /*switch (key) {
+        case 'w':
+        case 'W':
+        case OF_KEY_UP:
+            player.moveUP = false;
+            break;
+            
         case 'a':
-            moveL = false;
+        case 'A':
+        case OF_KEY_LEFT:
+            player.moveLEFT = false;
+            break;
+            
+        case 's':
+        case 'S':
+        case OF_KEY_DOWN:
+            player.moveDOWN = false;
             break;
             
         case 'd':
-            moveR = false;
+        case 'D':
+        case OF_KEY_RIGHT:
+            player.moveRIGHT = false;
             break;
-    }
+            
+        case 'g':
+        case 'G':
+            player.ghost = false;
+            break;
+    }*/
     
 }
 
