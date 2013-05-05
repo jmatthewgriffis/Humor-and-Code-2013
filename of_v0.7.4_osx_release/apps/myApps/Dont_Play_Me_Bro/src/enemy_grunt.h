@@ -15,11 +15,11 @@ class enemy_grunt {
     
 public:
     
-    void setup();
+    void setup(float x, float y);
     void update();
     void draw();
     
-    float xPos, yPos, rad, xVel, yVel;
+    float rad, xPos, yPos, xVel, yVel;
     
 };
 

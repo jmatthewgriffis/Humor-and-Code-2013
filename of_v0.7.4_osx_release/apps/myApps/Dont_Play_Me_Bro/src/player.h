@@ -15,11 +15,11 @@ class player {
     
 public:
     
-    void setup();
+    void setup(float x, float y);
     void update();
     void draw();
     
-    float xPos, yPos, wide, tall, xVel, yVel, gravity;
+    float wide, tall, xPos, yPos, xVel, yVel, gravity;
     bool moveUP, moveDOWN, moveLEFT, moveRIGHT;
     
 };

@@ -10,11 +10,11 @@
 
 //----------------------------------------------------------------
 
-void enemy_grunt::setup() {
+void enemy_grunt::setup(float x, float y) {
     
-    xPos = ofGetWidth()/2-100;
-    yPos = ofGetHeight()/2+25;
     rad = 25;
+    xPos = x;
+    yPos = y-rad; // y is ground level so we raise the grunt appropriately.
     
 };
 
