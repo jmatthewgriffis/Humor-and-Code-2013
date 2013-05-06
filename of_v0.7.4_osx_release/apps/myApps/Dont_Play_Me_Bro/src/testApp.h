@@ -21,11 +21,10 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
     
-    float originX, originY, groundY, moveSpeed, dist;
-    bool moveL, moveR;
+    float originX, originY, groundY, moveSpeed;
+    bool moveL, moveR, collided;
     
     player player;
     vector<enemy_grunt> enemies; // Make a dynamic array for enemy objects...
-    vector<bool> collision; // ...followed by another to check for collisions.
     
 };

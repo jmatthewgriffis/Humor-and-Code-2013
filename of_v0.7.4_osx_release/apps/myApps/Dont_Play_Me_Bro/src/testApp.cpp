@@ -13,6 +13,8 @@ void testApp::setup(){
     originX = originY = 0;
     groundY = ofGetHeight()-100;
     moveSpeed = 7;
+    moveL = moveR = collided = false;
+    
     player.setup(ofGetWidth()/2, groundY);
     
 }
@@ -27,13 +29,13 @@ void testApp::update(){
     
     player.update();
     
+    collided = false;
     for (int i=0; i<enemies.size(); i++) {
-        if (ofDist(player.xPos, player.yPos, enemies[i].xPos+originX, enemies[i].yPos) < player.wide/2+enemies[i].rad) collision[i] = true;
-        else collision[i] = false;
-        if (collision[i]) player.tall = 25;
-        else player.tall = 50;
-        cout<<collision[0]<<" "<<collision[1]<<" "<<collision[i]<<" "<<i<<endl;
+        if (ofDist(player.xPos, player.yPos, enemies[i].xPos+originX, enemies[i].yPos) < player.wide/2+enemies[i].rad) collided = true;
     }
+    
+    if (collided) player.tall = 25;
+    else player.tall = 50;
     
 }
 
@@ -88,9 +90,8 @@ void testApp::keyPressed(int key){
             
             // Restart the game:
         case 'r':
-            // Clear out the vectors:
+            // Clear out the vector:
             for (int i=0; i<enemies.size(); i++) enemies.erase(enemies.begin(), enemies.end());
-            for (int i=0; i<collision.size(); i++) collision.erase(collision.begin(), collision.end());
             setup(); // Reload from the top.
             break;
             
@@ -98,8 +99,6 @@ void testApp::keyPressed(int key){
             enemy_grunt enemy;
             enemy.setup(ofGetWidth()/2+300*enemies.size(), groundY);
             enemies.push_back(enemy);
-            bool collided = false;
-            collision.push_back(collided);
             break;
     }
     
