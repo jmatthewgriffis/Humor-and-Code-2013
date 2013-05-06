@@ -13,11 +13,6 @@ void testApp::setup(){
     originX = originY = 0;
     groundY = ofGetHeight()-100;
     moveSpeed = 7;
-    grunt.setup(ofGetWidth()/2-100, groundY);
-    //grunt2.setup(ofGetWidth()+100, groundY);
-    //enemies.push_back(enemeyTest);
-    //enemies.push_back(enemyTest2);
-    //cout<<enemies.size()<<endl;
     player.setup(ofGetWidth()/2, groundY);
     
 }
@@ -28,20 +23,16 @@ void testApp::update(){
     if (moveL) originX += moveSpeed; // Translate to the right on LEFT.
     if (moveR) originX -= moveSpeed; // Translate to the left on RIGHT.
     
-    //grunt.update();
-    //grunt2.update();
     for (int i = 0; i<enemies.size(); i++) enemies[i].update();
     
     player.update();
     
     for (int i=0; i<enemies.size(); i++) {
         if (ofDist(player.xPos, player.yPos, enemies[i].xPos+originX, enemies[i].yPos) < player.wide/2+enemies[i].rad) collision[i] = true;
-        
-    //dist = ofDist(player.xPos, player.yPos, grunt.xPos+originX, grunt.yPos);
-    //if (dist < ) {player.tall = 25;}
         else collision[i] = false;
         if (collision[i]) player.tall = 25;
         else player.tall = 50;
+        cout<<collision[0]<<" "<<collision[1]<<" "<<collision[i]<<" "<<i<<endl;
     }
     
 }
@@ -51,15 +42,17 @@ void testApp::draw(){
     
     ofBackground(0);
     ofLine(0, groundY, ofGetWidth(), groundY); // The ground.
+    
     // The player stays in one place and the environment translates as the player moves:
     ofPushMatrix();
     ofTranslate(originX, originY);
-    //grunt.draw();
-    //grunt2.draw();
     for (int i=0; i<enemies.size(); i++) enemies[i].draw();
     ofPopMatrix();
     
-    for (int i=0; i<enemies.size(); i++) ofLine(player.xPos, player.yPos, enemies[i].xPos+originX, enemies[i].yPos);
+    for (int i=0; i<enemies.size(); i++) {
+        ofLine(player.xPos, player.yPos-200, enemies[i].xPos+originX, enemies[i].yPos);
+    }
+    
     player.draw();
     
 }
@@ -95,10 +88,13 @@ void testApp::keyPressed(int key){
             
             // Restart the game:
         case 'r':
-            setup();
+            // Clear out the vectors:
+            for (int i=0; i<enemies.size(); i++) enemies.erase(enemies.begin(), enemies.end());
+            for (int i=0; i<collision.size(); i++) collision.erase(collision.begin(), collision.end());
+            setup(); // Reload from the top.
             break;
             
-            case 'm':
+        case 'm':
             enemy_grunt enemy;
             enemy.setup(ofGetWidth()/2+300*enemies.size(), groundY);
             enemies.push_back(enemy);
@@ -172,6 +168,6 @@ void testApp::gotMessage(ofMessage msg){
 }
 
 //--------------------------------------------------------------
-void testApp::dragEvent(ofDragInfo dragInfo){ 
+void testApp::dragEvent(ofDragInfo dragInfo){
     
 }

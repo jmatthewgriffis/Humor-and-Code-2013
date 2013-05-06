@@ -25,9 +25,7 @@ public:
     bool moveL, moveR;
     
     player player;
-    enemy_grunt grunt, grunt2;
     vector<enemy_grunt> enemies; // Make a dynamic array for enemy objects...
     vector<bool> collision; // ...followed by another to check for collisions.
-    //enemy_grunt enemeyTest, enemyTest2;
     
 };
