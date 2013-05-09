@@ -18,7 +18,7 @@ void enemy_grunt::setup(float x, float y) {
     xVel = yVel = 0;
     originX = 0;
     farOffScreen = -300;
-    stageRight = false;
+    stageRight = pwned = false;
     
 };
 

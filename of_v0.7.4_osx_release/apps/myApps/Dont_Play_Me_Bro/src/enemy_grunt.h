@@ -20,7 +20,8 @@ public:
     void draw();
     
     float rad, xPos, yPos, xVel, yVel, originX, farOffScreen;
-    bool stageRight; // Is the enemy offscreen to the left?
+    bool stageRight; // The enemy is offscreen to the left.
+    bool pwned; // The enemy is defeated.
     
 };
 

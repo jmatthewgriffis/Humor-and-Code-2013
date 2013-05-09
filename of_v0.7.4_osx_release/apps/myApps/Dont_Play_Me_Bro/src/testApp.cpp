@@ -4,9 +4,10 @@
 void testApp::setup(){
     
     // Housekeeping:
-    framerate = 60;
+    framerateNormal = 60;
+    frameRateSlow = framerateNormal/2;
     ofSetVerticalSync(true);
-    ofSetFrameRate(framerate);
+    ofSetFrameRate(framerateNormal);
     ofSetCircleResolution(60);
     ofSetRectMode(OF_RECTMODE_CENTER);
     ofNoFill();
@@ -17,7 +18,7 @@ void testApp::setup(){
     enemyRate = 2; // This many seconds between enemy appearances.
     enemyRateCounter = 0;
     maxEnemies = 10;
-    moveL = moveR = collided = false;
+    moveL = moveR = collided = slow = false;
     
     player.setup(ofGetWidth()/2-ofGetWidth()/4, groundY);
     
@@ -26,15 +27,18 @@ void testApp::setup(){
 //--------------------------------------------------------------
 bool bShouldIErase(enemy_grunt & a){
     
-    // Zach showed me how to use this method to remove an element from a vector. We create a boolean function, i.e. one that will return a boolean (so we don't use 'void'). We feed it a class and pass a reference label that we make up (in this case 'a') so we can refer to the applicable object. Then we check for a certain condition -- in this case whether the object has moved too far offscreen -- and if so we return a boolean value of 'true.' Otherwise it's 'false.'
+    // Zach showed me how to use this method to remove an element from a vector. We create a boolean function, i.e. one that will return a boolean (so we don't use 'void'). We feed it a class and pass a reference label that we make up (in this case 'a') so we can refer to the applicable object. Then we check for a certain condition -- in this case whether the object has moved too far offscreen or been defeated -- and if so we return a boolean value of 'true.' Otherwise it's 'false.'
     
-    if (a.stageRight) return true;
+    if (a.stageRight || a.pwned) return true;
     else return false;
     
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
+    
+    if (slow) ofSetFrameRate(frameRateSlow);
+    else ofSetFrameRate(framerateNormal);
     
     if (moveL) originX += moveSpeed; // Translate to the right on LEFT.
     if (moveR) originX -= moveSpeed; // Translate to the left on RIGHT.
@@ -43,7 +47,7 @@ void testApp::update(){
     moveR = true;
     
     // Advance the counter once per second:
-    if (enemyRateCounter < enemyRate) enemyRateCounter += 1/framerate;
+    if (enemyRateCounter < enemyRate) enemyRateCounter += 1/framerateNormal;
     
     // Generate enemies automatically at the pace we set in setup():
     if (enemyRateCounter >= enemyRate && enemies.size() < maxEnemies) {
@@ -61,12 +65,21 @@ void testApp::update(){
     // Detect a collision between the player and an enemy:
     collided = false; // Set this to false by default, overwritten by collision:
     for (int i=0; i<enemies.size(); i++) {
-        if (ofDist(player.xPos, player.yPos, enemies[i].xPos+originX, enemies[i].yPos) < player.wide/2+enemies[i].rad) collided = true;
+        if (ofDist(player.xPos, player.yPos, enemies[i].xPos+originX, enemies[i].yPos) < player.wide/2+enemies[i].rad) {
+            collided = true;
+            //enemies[i].pwned = true; // The enemy is defeated.
+        }
     }
     
     // Do something to the player on collision:
-    if (collided) player.tall = 25;
-    else player.tall = 50;
+    if (collided) {
+        slow = true;
+        player.tall = 25;
+    }
+    else {
+        slow = false;
+        player.tall = 50;
+    }
     
     // Following up the boolean function we created above, this oF function sorts the vector according to the values of the booleans and then removes any with a 'true' value:
     ofRemove(enemies,bShouldIErase);
@@ -137,6 +150,11 @@ void testApp::keyPressed(int key){
             enemy_grunt enemy;
             enemy.setup(ofGetWidth()/2+300*enemies.size(), groundY);
             enemies.push_back(enemy);
+            break;
+            
+            // Make a jump:
+            case ' ':
+            player.jump = true;
             break;
     }
     

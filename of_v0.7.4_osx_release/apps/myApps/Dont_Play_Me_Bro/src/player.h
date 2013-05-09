@@ -19,8 +19,8 @@ public:
     void update();
     void draw();
     
-    float wide, tall, xPos, yPos, xVel, yVel, gravity;
-    bool moveUP, moveDOWN, moveLEFT, moveRIGHT;
+    float wide, tall, xPos, yPos, onGround, xVel, yVel, gravity, jumpHeight;
+    bool moveUP, moveDOWN, moveLEFT, moveRIGHT, jump;
     
 };
 

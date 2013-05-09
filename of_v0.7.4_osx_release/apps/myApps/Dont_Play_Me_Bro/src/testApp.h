@@ -21,8 +21,8 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
     
-    float framerate, originX, originY, groundY, moveSpeed, enemyRate, enemyRateCounter, maxEnemies;
-    bool moveL, moveR, collided;
+    float framerateNormal, frameRateSlow, originX, originY, groundY, moveSpeed, enemyRate, enemyRateCounter, maxEnemies;
+    bool moveL, moveR, collided, slow;
     
     player player;
     vector<enemy_grunt> enemies; // Make a dynamic array for enemy objects...
