@@ -15,12 +15,19 @@ void enemy_grunt::setup(float x, float y) {
     rad = 25;
     xPos = x;
     yPos = y-rad; // y is ground level so we raise the grunt appropriately.
+    xVel = yVel = 0;
+    originX = 0;
+    farOffScreen = -300;
+    stageRight = false;
     
 };
 
 //----------------------------------------------------------------
 
-void enemy_grunt::update() {
+void enemy_grunt::update(float _originX) {
+    
+    originX = _originX;
+    if (xPos - fabs(originX) < farOffScreen) stageRight = true;
     
 };
 

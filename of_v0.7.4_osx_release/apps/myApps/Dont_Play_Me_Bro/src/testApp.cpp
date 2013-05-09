@@ -4,8 +4,9 @@
 void testApp::setup(){
     
     // Housekeeping:
+    framerate = 60;
     ofSetVerticalSync(true);
-    ofSetFrameRate(60);
+    ofSetFrameRate(framerate);
     ofSetCircleResolution(60);
     ofSetRectMode(OF_RECTMODE_CENTER);
     ofNoFill();
@@ -13,9 +14,22 @@ void testApp::setup(){
     originX = originY = 0;
     groundY = ofGetHeight()-100;
     moveSpeed = 7;
+    enemyRate = 2; // This many seconds between enemy appearances.
+    enemyRateCounter = 0;
+    maxEnemies = 10;
     moveL = moveR = collided = false;
     
-    player.setup(ofGetWidth()/2, groundY);
+    player.setup(ofGetWidth()/2-ofGetWidth()/4, groundY);
+    
+}
+
+//--------------------------------------------------------------
+bool bShouldIErase(enemy_grunt & a){
+    
+    // Zach showed me how to use this method to remove an element from a vector. We create a boolean function, i.e. one that will return a boolean (so we don't use 'void'). We feed it a class and pass a reference label that we make up (in this case 'a') so we can refer to the applicable object. Then we check for a certain condition -- in this case whether the object has moved too far offscreen -- and if so we return a boolean value of 'true.' Otherwise it's 'false.'
+    
+    if (a.stageRight) return true;
+    else return false;
     
 }
 
@@ -25,17 +39,37 @@ void testApp::update(){
     if (moveL) originX += moveSpeed; // Translate to the right on LEFT.
     if (moveR) originX -= moveSpeed; // Translate to the left on RIGHT.
     
-    for (int i = 0; i<enemies.size(); i++) enemies[i].update();
+    // Advance the screen automatically:
+    moveR = true;
+    
+    // Advance the counter once per second:
+    if (enemyRateCounter < enemyRate) enemyRateCounter += 1/framerate;
+    
+    // Generate enemies automatically at the pace we set in setup():
+    if (enemyRateCounter >= enemyRate && enemies.size() < maxEnemies) {
+        enemy_grunt enemy;
+        // Position them just offscreen to the right, taking into account the changing position of the origin:
+        enemy.setup(ofGetWidth()+fabs(originX)+100, groundY);
+        enemies.push_back(enemy);
+        enemyRateCounter = 0;
+    }
+    
+    for (int i = 0; i<enemies.size(); i++) enemies[i].update(originX);
     
     player.update();
     
-    collided = false;
+    // Detect a collision between the player and an enemy:
+    collided = false; // Set this to false by default, overwritten by collision:
     for (int i=0; i<enemies.size(); i++) {
         if (ofDist(player.xPos, player.yPos, enemies[i].xPos+originX, enemies[i].yPos) < player.wide/2+enemies[i].rad) collided = true;
     }
     
+    // Do something to the player on collision:
     if (collided) player.tall = 25;
     else player.tall = 50;
+    
+    // Following up the boolean function we created above, this oF function sorts the vector according to the values of the booleans and then removes any with a 'true' value:
+    ofRemove(enemies,bShouldIErase);
     
 }
 
@@ -43,14 +77,17 @@ void testApp::update(){
 void testApp::draw(){
     
     ofBackground(0);
-    ofLine(0, groundY, ofGetWidth(), groundY); // The ground.
     
-    // The player stays in one place and the environment translates as the player moves:
+    // Draw the ground:
+    ofLine(0, groundY, ofGetWidth(), groundY);
+    
+    // The player stays in one place and everything else translates as the player "moves":
     ofPushMatrix();
     ofTranslate(originX, originY);
     for (int i=0; i<enemies.size(); i++) enemies[i].draw();
     ofPopMatrix();
     
+    // Debug - draw a line from the center of each enemy to just above the player:
     for (int i=0; i<enemies.size(); i++) {
         ofLine(player.xPos, player.yPos-200, enemies[i].xPos+originX, enemies[i].yPos);
     }
@@ -95,6 +132,7 @@ void testApp::keyPressed(int key){
             setup(); // Reload from the top.
             break;
             
+            // Debug - generate an enemy on command:
         case 'm':
             enemy_grunt enemy;
             enemy.setup(ofGetWidth()/2+300*enemies.size(), groundY);

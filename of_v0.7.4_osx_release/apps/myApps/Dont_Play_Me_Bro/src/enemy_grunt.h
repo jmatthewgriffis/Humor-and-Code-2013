@@ -16,10 +16,11 @@ class enemy_grunt {
 public:
     
     void setup(float x, float y);
-    void update();
+    void update(float _originX);
     void draw();
     
-    float rad, xPos, yPos, xVel, yVel;
+    float rad, xPos, yPos, xVel, yVel, originX, farOffScreen;
+    bool stageRight; // Is the enemy offscreen to the left?
     
 };
 
