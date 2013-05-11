@@ -13,6 +13,7 @@ void testApp::setup(){
     ofSetRectMode(OF_RECTMODE_CENTER);
     ofNoFill();
     
+    xPosPlayerDefault = ofGetWidth()/2-ofGetWidth()/4;
     originX = originY = 0;
     groundY = ofGetHeight()-100;
     moveSpeed = 7;
@@ -24,9 +25,9 @@ void testApp::setup(){
     booYaCounter = 0;
     booYaCounterLimit = 0.5;
     storeI = 0;
-    moveL = moveR = collided = slow = vanish = rollForSlow = rollForNinja = rollForBooYa = ninjaMsg = booYaMsg = false;
+    moveL = moveR = collided = slow = vanish = rollForSlow = rollForNinja = rollForBooYa = ninjaMsg = booYaMsg = offScreenReset = false;
     
-    player.setup(ofGetWidth()/2-ofGetWidth()/4, groundY);
+    player.setup(xPosPlayerDefault, groundY);
     
 }
 
@@ -43,6 +44,12 @@ bool bShouldIErase(enemy_grunt & a){
 //--------------------------------------------------------------
 void testApp::update(){
     
+    // If the player goes offscreen, reset to the default position:
+    if (player.xPos < -player.wide || player.xPos > ofGetWidth()+player.wide) {
+        player.xPos = xPosPlayerDefault;
+        player.yPos = player.onGround;
+    }
+    
     if (booYaCounter > 0) booYaCounter -= 1/framerate;
     
     if (slow) framerate = frameRateSlow;
@@ -52,10 +59,18 @@ void testApp::update(){
     if (moveL) originX += moveSpeed; // Translate to the right on LEFT.
     if (moveR) originX -= moveSpeed; // Translate to the left on RIGHT.
     
-    // Advance the screen automatically:
+    // Restore the player to default position where appropriate:
+    if (player.yPos == player.onGround && !player.vanish && !player.kickAss){
+        if (player.xPos > xPosPlayerDefault) player.xPos--;
+        if (player.xPos < xPosPlayerDefault) player.xPos++;
+    }
+    
     moveR = true;
+    // Advance the screen automatically when the player's in the default pos:
+    if ((player.xPos != xPosPlayerDefault && player.yPos != player.onGround && !collided) || player.vanish || player.kickAss) moveR = false;
+    else if (collided && player.xPos < xPosPlayerDefault/2) moveR = false;
     // ...unless the player attacks:
-    if (player.vanish || player.kickAss) moveR = false;
+    //else moveR = false;
     
     // Advance the enemy generation counter once per second:
     if (enemyRateCounter < enemyRate) enemyRateCounter += 1/framerateNormal;
@@ -79,12 +94,12 @@ void testApp::update(){
         
         float enemyDistance = ofDist(player.xPos, player.yPos, enemies[i].xPos+originX, enemies[i].yPos);
         
-        float attackDistance = (player.wide/2+enemies[i].rad)*3;
+        float attackDistance = (player.wide/2+enemies[i].rad)*4;
         
         float defeatDistance = player.wide/2+enemies[i].rad;
         
-        if (enemyDistance < attackDistance) {
-            storeI = i; // Record the value of the enemy in question.
+        if (enemyDistance < attackDistance && player.xPos < ofGetWidth()-xPosPlayerDefault) {
+            if (!player.vanish && !player.kickAss) storeI = i; // Record the value of the enemy in question.
             collided = true; // This cues jumping, vanishing, then kicking ass.
             if (enemyDistance < defeatDistance) {
                 enemies[i].pwned = true; // The enemy is defeated.
@@ -104,7 +119,7 @@ void testApp::update(){
     if (booYaCounter <= 0) booYaMsg = false;
     
     // Trigger effects on collision:
-    if (collided) {
+    if (collided && !player.kickAss) {
         player.jump = true;
         player.tall = 25;
         
@@ -134,9 +149,21 @@ void testApp::update(){
         ninjaMsg = false;
     }
     
+    // The player reappears at a randomized point:
+    if (player.changeX) {
+        player.xPos += ofRandom(-xPosPlayerDefault, xPosPlayerDefault);
+        player.yPos += ofRandom(-player.yPos, player.onGround-player.yPos-10);
+        player.changeX = false;
+    }
+    
     // We use Xeno's Paradox to "animate" the player's movement toward the enemy's position to make an attack:
     if (player.kickAss) {
-        originX += xeno * ofDist(player.xPos, player.yPos, enemies[storeI].xPos+originX, player.yPos);
+        if (player.xPos >= enemies[storeI].xPos+originX) {
+            player.xPos -= xeno * ofDist(player.xPos, player.yPos, enemies[storeI].xPos+originX, player.yPos);
+        }
+        else {
+            player.xPos += xeno * ofDist(player.xPos, player.yPos, enemies[storeI].xPos+originX, player.yPos);
+        }
         player.yPos += xeno * ofDist(player.xPos, player.yPos, player.xPos, enemies[storeI].yPos);
     }
     

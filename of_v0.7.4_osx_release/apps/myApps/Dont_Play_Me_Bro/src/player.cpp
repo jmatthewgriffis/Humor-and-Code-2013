@@ -23,7 +23,7 @@ void player::setup(float x, float y) {
     vanishLimit = 1;
     framerate = 0;
     yVelTiny = 0.25;
-    moveUP = moveDOWN = moveLEFT = moveRIGHT = allowJump = jump = topOfJump = vanish = kickAss = false;
+    moveUP = moveDOWN = moveLEFT = moveRIGHT = allowJump = jump = topOfJump = vanish = kickAss = changeX = false;
     
 };
 
@@ -40,6 +40,7 @@ void player::update(float _framerate) {
     if (vanishCounter >= vanishLimit) {
         yVel = yVelTiny;
         vanish = false;
+        changeX = true;
         kickAss = true;
         vanishCounter = 0;
     }
