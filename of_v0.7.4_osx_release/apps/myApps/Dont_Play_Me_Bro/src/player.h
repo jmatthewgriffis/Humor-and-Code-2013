@@ -16,10 +16,10 @@ class player {
 public:
     
     void setup(float x, float y);
-    void update();
+    void update(float _framerate);
     void draw();
     
-    float wide, tall, xPos, yPos, onGround, xVel, yVel, gravity, jumpHeight;
+    float wide, tall, xPos, yPos, onGround, xVel, yVel, gravity, jumpHeight, vanishCounter, vanishLimit, framerate, yVelTiny;
     bool moveUP, moveDOWN, moveLEFT, moveRIGHT, allowJump, jump, topOfJump, vanish;
     
 };

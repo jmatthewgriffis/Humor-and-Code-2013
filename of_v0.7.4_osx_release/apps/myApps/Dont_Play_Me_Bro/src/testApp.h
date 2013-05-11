@@ -21,7 +21,7 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
     
-    float framerateNormal, frameRateSlow, originX, originY, groundY, moveSpeed, enemyRate, enemyRateCounter, maxEnemies;
+    float framerate, framerateNormal, frameRateSlow, originX, originY, groundY, moveSpeed, enemyRate, enemyRateCounter, maxEnemies;
     bool moveL, moveR, collided, slow, vanish;
     
     player player;

@@ -4,6 +4,7 @@
 void testApp::setup(){
     
     // Housekeeping:
+    framerate = 0;
     framerateNormal = 60;
     frameRateSlow = framerateNormal/2;
     ofSetVerticalSync(true);
@@ -37,8 +38,9 @@ bool bShouldIErase(enemy_grunt & a){
 //--------------------------------------------------------------
 void testApp::update(){
     
-    if (slow) ofSetFrameRate(frameRateSlow);
-    else ofSetFrameRate(framerateNormal);
+    if (slow) framerate = frameRateSlow;
+    else framerate = framerateNormal;
+    ofSetFrameRate(framerate);
     
     if (moveL) originX += moveSpeed; // Translate to the right on LEFT.
     if (moveR) originX -= moveSpeed; // Translate to the left on RIGHT.
@@ -60,7 +62,7 @@ void testApp::update(){
     
     for (int i = 0; i<enemies.size(); i++) enemies[i].update(originX);
     
-    player.update();
+    player.update(framerate);
     
     // Detect a collision between the player and an enemy:
     collided = false; // Set this to false by default, overwritten by collision:
@@ -74,8 +76,6 @@ void testApp::update(){
         
         if (enemyDistance < attackDistance) {
             collided = true;
-            //moveR = false;
-            player.jump = true;
             //if (enemyDistance < defeatDistance) enemies[i].pwned = true; // The enemy is defeated.
         }
         else player.jump = false;
@@ -86,6 +86,7 @@ void testApp::update(){
     // Do something to the player on collision:
     if (collided) {
         slow = true;
+        player.jump = true;
         player.tall = 25;
     }
     else {
