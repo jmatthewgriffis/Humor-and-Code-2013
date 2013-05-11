@@ -21,7 +21,8 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
     
-    float framerate, framerateNormal, frameRateSlow, originX, originY, groundY, moveSpeed, enemyRate, enemyRateCounter, maxEnemies;
+    float framerate, framerateNormal, frameRateSlow, originX, originY, groundY, moveSpeed, enemyRate, enemyRateCounter, maxEnemies, xeno;
+    int storeI; // Store a specific value of i for a vector.
     bool moveL, moveR, collided, slow, vanish;
     
     player player;
