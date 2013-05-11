@@ -24,7 +24,7 @@ public:
     float framerate, framerateNormal, frameRateSlow, xPosPlayerDefault, originX, originY, groundY, moveSpeed, enemyRate, enemyRateCounter, maxEnemies, xeno, mouthX, mouthY, msgX, msgY, textX, textY, booYaCounter, booYaCounterLimit, youWonCounter, youWonCounterLimit;
     int storeI; // Store a specific value of i for a vector.
     int enemiesDefeated, totalToWin;
-    bool titleScreen, moveL, moveR, collided, slow, vanish, rollForSlow, rollForNinja, rollForBooYa, ninjaMsg, booYaMsg, offScreenReset;
+    bool titleScreen, moveL, moveR, collided, slow, vanish, rollForSlow, rollForNinja, rollForBooYa, ninjaMsg, booYaMsg, offScreenReset, canDisplayMsg1, displayMsg1, canDisplayMsg2, displayMsg2, canDisplayMsg3, displayMsg3, allowAdvance;
     
     player player;
     vector<enemy_grunt> enemies; // Make a dynamic array for enemy objects...

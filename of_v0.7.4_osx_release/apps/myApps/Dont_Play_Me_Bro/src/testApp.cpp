@@ -30,12 +30,16 @@ void testApp::setup(){
     
     // Ints:
     storeI = 0;
-    enemiesDefeated = 99;
-    totalToWin = 100;
+    enemiesDefeated = 0;
+    totalToWin = 50;
     
     // Bools:
-    titleScreen = true;
-    moveL = moveR = collided = slow = vanish = rollForSlow = rollForNinja = rollForBooYa = ninjaMsg = booYaMsg = offScreenReset = false;
+    titleScreen = canDisplayMsg1 = canDisplayMsg2 = canDisplayMsg3 = allowAdvance = true;
+    moveL = moveR = collided = slow = vanish = rollForSlow = rollForNinja = rollForBooYa = ninjaMsg = booYaMsg = offScreenReset = displayMsg1 = displayMsg2 = displayMsg3 = false;
+    
+    //Debug:
+    titleScreen = false;
+    displayMsg3 = true;
     
     player.setup(xPosPlayerDefault, groundY);
     
@@ -54,7 +58,7 @@ bool bShouldIErase(enemy_grunt & a){
 //--------------------------------------------------------------
 void testApp::update(){
     
-    if (!titleScreen) {
+    if (!titleScreen && !displayMsg1 && !displayMsg2 && !displayMsg3) {
         
         // If the player goes offscreen, reset to the default position:
         if (player.xPos < -player.wide || player.xPos > ofGetWidth()+player.wide) {
@@ -214,6 +218,34 @@ void testApp::draw(){
         
     }
     
+    // The message screens:
+    else if (displayMsg1 || displayMsg2 || displayMsg3) {
+        
+        // Draw the player at a larger scale in fixed position:
+        ofRect(ofGetWidth()/2+200, ofGetHeight()/2+200, 100, 100);
+        // Connect the player and the message:
+        ofLine(ofGetWidth()/2+125, ofGetHeight()/2+150, ofGetWidth()/2+25, ofGetHeight()/2+70);
+        
+        // Draw the message:
+        
+        if (displayMsg1) {
+            canDisplayMsg1 = false;
+            ofDrawBitmapString("Whoa there, bro. Whoa.\n\nI see what you're doing, bro. You\nsee what's up and you want to help.\nHey, I appreciate it, bro.\n\nBut don't worry -- I got this!\nJust hit [SPACE], sit back and\nlet me show you how it's done.", ofGetWidth()/2-230, ofGetHeight()/2-60);
+        }
+        
+        else if (displayMsg2) {
+            canDisplayMsg2 = false;
+            ofDrawBitmapString("Now bro, I admire your enthusiasm.\nI really do. That's why we're bros, bro!\n\nBut let's be honest here.\nWe both know your 'helping'\nwill only interfere, bro.\n\nI'm doing some cool stuff, right bro?\nDo you know how to do that stuff?\n\nBro. You do not.\n\nLet's just forget about this, hit [SPACE],\nand you can cheer me on, bro!\nI can't do it without you!", ofGetWidth()/2-230, ofGetHeight()/2-125);
+        }
+        
+        else if (displayMsg3) {
+            canDisplayMsg3 = false;
+            ofDrawBitmapString("Bro!", ofGetWidth()/2-230, ofGetHeight()/2-60);
+        }
+        
+    }
+    
+    // The game screen:
     else {
         
         if (youWonCounter == 0) { // If the player hasn't won the game:
@@ -258,7 +290,9 @@ void testApp::draw(){
             
         }
         
-        else { // If the player has won the game:
+        // The end screen:
+        else {
+            
             // Draw some messages:
             ofDrawBitmapString("-- ERROR: ULTIMATE ATTACK DOES NOT EXIST. --", ofGetWidth()/2-160, ofGetHeight()/2-100);
             
@@ -267,6 +301,7 @@ void testApp::draw(){
             ofRect(ofGetWidth()/2+200, ofGetHeight()/2+200, 100, 100);
             // Connect the player and the message:
             ofLine(ofGetWidth()/2+125, ofGetHeight()/2+150, ofGetWidth()/2+25, ofGetHeight()/2+70);
+            
         }
     }
     
@@ -277,28 +312,32 @@ void testApp::keyPressed(int key){
     
     // Enable movement on keyPress:
     switch (key) {
-            /*case 'w':
-             case 'W':
-             case OF_KEY_UP:
-             player.moveUP = true;
+            
+            // Debug - generate an enemy on command:
+            /*case 'm':
+             enemy_grunt enemy;
+             enemy.setup(ofGetWidth()/2+300*enemies.size(), groundY);
+             enemies.push_back(enemy);
              break;*/
             
+            // Trigger/advance messages where appropriate:
         case 'a':
         case 'A':
         case OF_KEY_LEFT:
-            moveL = true;
-            break;
-            
-            /*case 's':
-             case 'S':
-             case OF_KEY_DOWN:
-             player.moveDOWN = true;
-             break;*/
-            
         case 'd':
         case 'D':
         case OF_KEY_RIGHT:
-            moveR = true;
+        case ' ':
+            if (allowAdvance) {
+                if (titleScreen) titleScreen = false;
+                else if (canDisplayMsg1) displayMsg1 = true;
+                else if (displayMsg1) displayMsg1 = false;
+                else if (canDisplayMsg2) displayMsg2 = true;
+                else if (displayMsg2) displayMsg2 = false;
+                else if (canDisplayMsg3) displayMsg3 = true;
+                else if (displayMsg3) displayMsg3 = false;
+            }
+            allowAdvance = false; // This prevents advancing by holding the key.
             break;
             
             // Restart the game:
@@ -306,19 +345,6 @@ void testApp::keyPressed(int key){
             // Clear out the vector:
             for (int i=0; i<enemies.size(); i++) enemies.erase(enemies.begin(), enemies.end());
             setup(); // Reload from the top.
-            break;
-            
-            // Debug - generate an enemy on command:
-        case 'm':
-            enemy_grunt enemy;
-            enemy.setup(ofGetWidth()/2+300*enemies.size(), groundY);
-            enemies.push_back(enemy);
-            break;
-            
-            // Make a jump:
-        case ' ':
-            if (titleScreen) titleScreen = false;
-            else player.jump = true;
             break;
     }
     
@@ -329,33 +355,14 @@ void testApp::keyReleased(int key){
     
     // Disable movement on keyRelease:
     switch (key) {
-            /*case 'w':
-             case 'W':
-             case OF_KEY_UP:
-             player.moveUP = false;
-             break;*/
-            
         case 'a':
         case 'A':
         case OF_KEY_LEFT:
-            moveL = false;
-            break;
-            
-            /*case 's':
-             case 'S':
-             case OF_KEY_DOWN:
-             player.moveDOWN = false;
-             break;*/
-            
         case 'd':
         case 'D':
         case OF_KEY_RIGHT:
-            moveR = false;
-            break;
-            
-            // Deny a jump:
         case ' ':
-            player.jump = false;
+            allowAdvance = true;
             break;
     }
     
