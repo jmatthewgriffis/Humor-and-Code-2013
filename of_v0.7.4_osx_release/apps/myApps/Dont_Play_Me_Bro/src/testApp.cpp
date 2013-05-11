@@ -25,6 +25,8 @@ void testApp::setup(){
     booYaCounter = 0;
     booYaCounterLimit = 0.5;
     storeI = 0;
+    enemiesDefeated = 0;
+    totalToWin = 100;
     moveL = moveR = collided = slow = vanish = rollForSlow = rollForNinja = rollForBooYa = ninjaMsg = booYaMsg = offScreenReset = false;
     
     player.setup(xPosPlayerDefault, groundY);
@@ -103,6 +105,7 @@ void testApp::update(){
             collided = true; // This cues jumping, vanishing, then kicking ass.
             if (enemyDistance < defeatDistance) {
                 enemies[i].pwned = true; // The enemy is defeated.
+                enemiesDefeated++;
                 player.kickAss = false;
                 // Occasionally play a message of condolence:
                 if (rollForBooYa && ofRandom(1) <= 0.6) {
@@ -197,6 +200,18 @@ void testApp::draw(){
         if (booYaMsg) string = "Booya, bro!"; // Write a message sometimes upon defeating enemy.
         ofDrawBitmapString(string, textX, textY);
     }
+    
+    // Indicate the number of Bro Points:
+    ofDrawBitmapString("Bro Points: MAXED OUT!", 25, 25);
+    
+    // Describe the controls:
+    ofDrawBitmapString("CONTROLS:\nA/D or LEFT/RIGHT to move.\nSPACE to jump.\nSPACE while jumping to attack.\nR to restart if things get crazy.", 25, ofGetHeight()-70);
+    
+    // Describe the goal:
+    ofDrawBitmapString("Help Square defeat all the circles in\norder to unleash the Ultimate Attack.\n\nOnce the Attack completes, the\ngame restarts, so watch closely!", ofGetWidth()-350, ofGetHeight()-70);
+    
+    // Keep an onscreen count of enemies defeated and progress towards goal:
+    ofDrawBitmapString("Vicious circles defeated: " + ofToString(enemiesDefeated) + " / " + ofToString(totalToWin), ofGetWidth()-290, 25);
     
     // The player stays in one place and everything else translates as the player "moves":
     ofPushMatrix();
