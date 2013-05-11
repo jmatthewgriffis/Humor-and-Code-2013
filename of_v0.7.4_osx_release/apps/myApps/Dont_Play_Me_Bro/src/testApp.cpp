@@ -6,7 +6,7 @@ void testApp::setup(){
     // Housekeeping:
     framerate = 0;
     framerateNormal = 60;
-    frameRateSlow = framerateNormal/2;
+    frameRateSlow = framerateNormal/4;
     ofSetVerticalSync(true);
     ofSetFrameRate(framerateNormal);
     ofSetCircleResolution(60);
@@ -20,9 +20,11 @@ void testApp::setup(){
     enemyRateCounter = 0;
     maxEnemies = 10;
     xeno = 0.1; // How quickly an attack closes the distance (bigger = faster).
+    mouthX = mouthY = msgX = msgY = textX = textY = 0;
+    booYaCounter = 0;
+    booYaCounterLimit = 0.5;
     storeI = 0;
-    moveL = moveR = collided = slow = vanish = false;
-    //moveR = true;
+    moveL = moveR = collided = slow = vanish = rollForSlow = rollForNinja = rollForBooYa = ninjaMsg = booYaMsg = false;
     
     player.setup(ofGetWidth()/2-ofGetWidth()/4, groundY);
     
@@ -41,6 +43,8 @@ bool bShouldIErase(enemy_grunt & a){
 //--------------------------------------------------------------
 void testApp::update(){
     
+    if (booYaCounter > 0) booYaCounter -= 1/framerate;
+    
     if (slow) framerate = frameRateSlow;
     else framerate = framerateNormal;
     ofSetFrameRate(framerate);
@@ -50,9 +54,10 @@ void testApp::update(){
     
     // Advance the screen automatically:
     moveR = true;
-    if (collided || player.kickAss) moveR = false;
+    // ...unless the player attacks:
+    if (player.vanish || player.kickAss) moveR = false;
     
-    // Advance the counter once per second:
+    // Advance the enemy generation counter once per second:
     if (enemyRateCounter < enemyRate) enemyRateCounter += 1/framerateNormal;
     
     // Generate enemies automatically at the pace we set in setup():
@@ -64,8 +69,8 @@ void testApp::update(){
         enemyRateCounter = 0;
     }
     
+    // Update everyone:
     for (int i = 0; i<enemies.size(); i++) enemies[i].update(originX);
-    
     player.update(framerate);
     
     // Detect a collision between the player and an enemy:
@@ -79,34 +84,69 @@ void testApp::update(){
         float defeatDistance = player.wide/2+enemies[i].rad;
         
         if (enemyDistance < attackDistance) {
-            storeI = i;
-            collided = true;
+            storeI = i; // Record the value of the enemy in question.
+            collided = true; // This cues jumping, vanishing, then kicking ass.
             if (enemyDistance < defeatDistance) {
                 enemies[i].pwned = true; // The enemy is defeated.
                 player.kickAss = false;
+                // Occasionally play a message of condolence:
+                if (rollForBooYa && ofRandom(1) <= 0.6) {
+                    booYaMsg = true;
+                    booYaCounter = booYaCounterLimit;
+                    rollForBooYa = false;
+                }
+                else rollForBooYa = false;
             }
         }
         else player.jump = false;
     }
+    rollForBooYa = true;
+    if (booYaCounter <= 0) booYaMsg = false;
     
-    if (player.vanish) moveR = false;
-    
-    // Do something to the player on collision:
+    // Trigger effects on collision:
     if (collided) {
-        slow = true;
         player.jump = true;
         player.tall = 25;
+        
+        // Randomly activate slow motion:
+        if (rollForSlow && ofRandom(1) < 0.2) {
+            slow = true;
+            rollForSlow = false;
+        }
+        else rollForSlow = false;
     }
-    if (player.kickAss) {
-        originX += xeno * ofDist(player.xPos, player.yPos, enemies[storeI].xPos+originX, player.yPos);
-        player.yPos += xeno * ofDist(player.xPos, player.yPos, player.xPos, enemies[storeI].yPos);
-    }
-    else {
+    else { // Restore default values:
+        rollForSlow = true;
         slow = false;
         player.tall = 50;
     }
     
-    cout<<player.kickAss<<endl;
+    // Randomly comment on the vanishing act:
+    if (player.vanish) {
+        if (rollForNinja && ofRandom(1) < 0.5) {
+            ninjaMsg = true;
+            rollForNinja = false;
+        }
+        else rollForNinja = false;
+    }
+    else { // Restore default values:
+        rollForNinja = true;
+        ninjaMsg = false;
+    }
+    
+    // We use Xeno's Paradox to "animate" the player's movement toward the enemy's position to make an attack:
+    if (player.kickAss) {
+        originX += xeno * ofDist(player.xPos, player.yPos, enemies[storeI].xPos+originX, player.yPos);
+        player.yPos += xeno * ofDist(player.xPos, player.yPos, player.xPos, enemies[storeI].yPos);
+    }
+    
+    // Update coordinates for writing messages:
+    mouthX = player.xPos-player.wide/2-10;
+    mouthY = player.yPos-player.tall/2-10;
+    msgX = player.xPos-110;
+    msgY = ofGetHeight()/2+10;
+    textX = player.xPos-140;
+    textY = ofGetHeight()/2;
     
     // Following up the boolean function we created above, this oF function sorts the vector according to the values of the booleans and then removes any with a 'true' value:
     ofRemove(enemies,bShouldIErase);
@@ -121,6 +161,16 @@ void testApp::draw(){
     // Draw the ground:
     ofLine(0, groundY, ofGetWidth(), groundY);
     
+    // Draw messages:
+    if (slow || ninjaMsg || booYaMsg) {
+        string string;
+        ofLine(mouthX, mouthY, msgX, msgY); // Line to "speech bubble."
+        if (slow) string = "I do it slow, bro!"; // Write a message if there's slow motion.
+        if (ninjaMsg) string = "Poof! Like a ninja, bro!"; // Write a message sometimes upon vanishing.
+        if (booYaMsg) string = "Booya, bro!"; // Write a message sometimes upon defeating enemy.
+        ofDrawBitmapString(string, textX, textY);
+    }
+    
     // The player stays in one place and everything else translates as the player "moves":
     ofPushMatrix();
     ofTranslate(originX, originY);
@@ -128,9 +178,9 @@ void testApp::draw(){
     ofPopMatrix();
     
     // Debug - draw a line from the center of each enemy to just above the player:
-    for (int i=0; i<enemies.size(); i++) {
-        ofLine(player.xPos, player.yPos-200, enemies[i].xPos+originX, enemies[i].yPos);
-    }
+    /*for (int i=0; i<enemies.size(); i++) {
+     ofLine(player.xPos, player.yPos-200, enemies[i].xPos+originX, enemies[i].yPos);
+     }*/
     
     player.draw();
     
@@ -180,7 +230,7 @@ void testApp::keyPressed(int key){
             break;
             
             // Make a jump:
-            case ' ':
+        case ' ':
             player.jump = true;
             break;
     }

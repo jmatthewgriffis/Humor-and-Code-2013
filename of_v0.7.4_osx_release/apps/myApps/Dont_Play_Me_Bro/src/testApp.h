@@ -21,9 +21,9 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
     
-    float framerate, framerateNormal, frameRateSlow, originX, originY, groundY, moveSpeed, enemyRate, enemyRateCounter, maxEnemies, xeno;
+    float framerate, framerateNormal, frameRateSlow, originX, originY, groundY, moveSpeed, enemyRate, enemyRateCounter, maxEnemies, xeno, mouthX, mouthY, msgX, msgY, textX, textY, booYaCounter, booYaCounterLimit;
     int storeI; // Store a specific value of i for a vector.
-    bool moveL, moveR, collided, slow, vanish;
+    bool moveL, moveR, collided, slow, vanish, rollForSlow, rollForNinja, rollForBooYa, ninjaMsg, booYaMsg;
     
     player player;
     vector<enemy_grunt> enemies; // Make a dynamic array for enemy objects...
