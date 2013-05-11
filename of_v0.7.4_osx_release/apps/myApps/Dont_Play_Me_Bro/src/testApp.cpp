@@ -22,7 +22,7 @@ void testApp::setup(){
     xeno = 0.1; // How quickly an attack closes the distance (bigger = faster).
     storeI = 0;
     moveL = moveR = collided = slow = vanish = false;
-    moveR = true;
+    //moveR = true;
     
     player.setup(ofGetWidth()/2-ofGetWidth()/4, groundY);
     
@@ -49,7 +49,8 @@ void testApp::update(){
     if (moveR) originX -= moveSpeed; // Translate to the left on RIGHT.
     
     // Advance the screen automatically:
-    //moveR = true;
+    moveR = true;
+    if (collided || player.kickAss) moveR = false;
     
     // Advance the counter once per second:
     if (enemyRateCounter < enemyRate) enemyRateCounter += 1/framerateNormal;
@@ -97,7 +98,7 @@ void testApp::update(){
         player.tall = 25;
     }
     if (player.kickAss) {
-        player.xPos -= xeno * ofDist(player.xPos, player.yPos, enemies[storeI].xPos+originX, player.yPos);
+        originX += xeno * ofDist(player.xPos, player.yPos, enemies[storeI].xPos+originX, player.yPos);
         player.yPos += xeno * ofDist(player.xPos, player.yPos, player.xPos, enemies[storeI].yPos);
     }
     else {
@@ -105,7 +106,7 @@ void testApp::update(){
         player.tall = 50;
     }
     
-    cout<<storeI<<endl;
+    cout<<player.kickAss<<endl;
     
     // Following up the boolean function we created above, this oF function sorts the vector according to the values of the booleans and then removes any with a 'true' value:
     ofRemove(enemies,bShouldIErase);
