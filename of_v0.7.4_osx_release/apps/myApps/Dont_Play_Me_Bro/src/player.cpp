@@ -19,7 +19,7 @@ void player::setup(float x, float y) {
     xVel = yVel = 0;
     gravity = 0.3;
     jumpHeight = -10;
-    moveUP = moveDOWN = moveLEFT = moveRIGHT = jump = false;
+    moveUP = moveDOWN = moveLEFT = moveRIGHT = allowJump = jump = topOfJump = vanish = false;
     
 };
 
@@ -27,18 +27,32 @@ void player::setup(float x, float y) {
 
 void player::update() {
     
-    // Gravity is always imposing and modifying a y-velocity on the player, which in turn modify's the player's y-position, but the upward force of the ground cancels out further downward motion:
-    yPos += yVel;
-    yVel += gravity;
+    topOfJump = false;
+    
+    // Keep the player from falling through the ground:
     if (yPos >= onGround) {
         yVel = 0;
         yPos = onGround;
     }
     
+    if (yPos == onGround) allowJump = true;
+    else allowJump = false;
+    
     // If a jump is cued, give the player an upward y-velocity and immediately turn off the boolean so the player doesn't fly up forever:
-    if (jump) {
+    if (jump && allowJump) {
         yVel = jumpHeight;
         jump = false;
+    }
+    
+    // If the player's not on the ground (and therefore has a yVel), check if near the top of the jump:
+    if (yPos < onGround && fabs(yVel) < 0.25) topOfJump = true;
+    
+    if (topOfJump) vanish = true; // Make like a ninja.
+    
+    if (!vanish) {
+        // Unless the player is making like a ninja, gravity is always imposing and modifying a y-velocity, which in turn modifies the player's y-position:
+        yPos += yVel;
+        yVel += gravity;
     }
     
 };
@@ -47,6 +61,6 @@ void player::update() {
 
 void player::draw() {
     
-    ofRect(xPos, yPos, wide, tall);
+    if (!vanish) ofRect(xPos, yPos, wide, tall);
     
 };

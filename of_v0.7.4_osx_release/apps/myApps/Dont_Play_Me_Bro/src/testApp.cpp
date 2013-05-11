@@ -18,7 +18,7 @@ void testApp::setup(){
     enemyRate = 2; // This many seconds between enemy appearances.
     enemyRateCounter = 0;
     maxEnemies = 10;
-    moveL = moveR = collided = slow = false;
+    moveL = moveR = collided = slow = vanish = false;
     
     player.setup(ofGetWidth()/2-ofGetWidth()/4, groundY);
     
@@ -65,11 +65,23 @@ void testApp::update(){
     // Detect a collision between the player and an enemy:
     collided = false; // Set this to false by default, overwritten by collision:
     for (int i=0; i<enemies.size(); i++) {
-        if (ofDist(player.xPos, player.yPos, enemies[i].xPos+originX, enemies[i].yPos) < player.wide/2+enemies[i].rad) {
+        
+        float enemyDistance = ofDist(player.xPos, player.yPos, enemies[i].xPos+originX, enemies[i].yPos);
+        
+        float attackDistance = (player.wide/2+enemies[i].rad)*3;
+        
+        float defeatDistance = player.wide/2+enemies[i].rad;
+        
+        if (enemyDistance < attackDistance) {
             collided = true;
-            //enemies[i].pwned = true; // The enemy is defeated.
+            //moveR = false;
+            player.jump = true;
+            //if (enemyDistance < defeatDistance) enemies[i].pwned = true; // The enemy is defeated.
         }
+        else player.jump = false;
     }
+    
+    if (player.vanish) moveR = false;
     
     // Do something to the player on collision:
     if (collided) {
@@ -187,6 +199,11 @@ void testApp::keyReleased(int key){
         case 'D':
         case OF_KEY_RIGHT:
             moveR = false;
+            break;
+            
+            // Deny a jump:
+        case ' ':
+            player.jump = false;
             break;
     }
     

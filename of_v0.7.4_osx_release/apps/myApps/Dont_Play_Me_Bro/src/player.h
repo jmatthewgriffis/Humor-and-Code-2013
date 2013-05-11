@@ -20,7 +20,7 @@ public:
     void draw();
     
     float wide, tall, xPos, yPos, onGround, xVel, yVel, gravity, jumpHeight;
-    bool moveUP, moveDOWN, moveLEFT, moveRIGHT, jump;
+    bool moveUP, moveDOWN, moveLEFT, moveRIGHT, allowJump, jump, topOfJump, vanish;
     
 };
 
