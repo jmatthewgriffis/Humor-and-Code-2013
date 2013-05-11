@@ -37,10 +37,6 @@ void testApp::setup(){
     titleScreen = canDisplayMsg1 = canDisplayMsg2 = canDisplayMsg3 = allowAdvance = true;
     moveL = moveR = collided = slow = vanish = rollForSlow = rollForNinja = rollForBooYa = ninjaMsg = booYaMsg = offScreenReset = displayMsg1 = displayMsg2 = displayMsg3 = false;
     
-    //Debug:
-    titleScreen = false;
-    displayMsg3 = true;
-    
     player.setup(xPosPlayerDefault, groundY);
     
 }
@@ -240,7 +236,7 @@ void testApp::draw(){
         
         else if (displayMsg3) {
             canDisplayMsg3 = false;
-            ofDrawBitmapString("Bro!", ofGetWidth()/2-230, ofGetHeight()/2-60);
+            ofDrawBitmapString("Bro! FOR SERIOUS, BRO.\nKNOCK IT OFF.\n\nI'm not sure you're listening.\nThis action is too complex for you,\na'ight bro?\n\nI'm just trying to make it easier\non you so you can have more fun.\nDon't you see that, bro?\nLet me take care of things\nand we'll all have a good time;\notherwise it's challenge,\nfrustration and anger, bro.\n\nNow, I need you to press [SPACE], and\nthen everything will be chill, bro.", ofGetWidth()/2-230, ofGetHeight()/2-175);
         }
         
     }
