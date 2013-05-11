@@ -27,6 +27,8 @@ void testApp::setup(){
     booYaCounterLimit = 0.5;
     youWonCounter = 0;
     youWonCounterLimit = 10; // Number of seconds the winning message appears.
+    dontPlayMeMsgCounter = 0;
+    dontPlayMeMsgCounterLimit = 1;
     
     // Ints:
     storeI = 0;
@@ -35,7 +37,7 @@ void testApp::setup(){
     
     // Bools:
     titleScreen = canDisplayMsg1 = canDisplayMsg2 = canDisplayMsg3 = allowAdvance = true;
-    moveL = moveR = collided = slow = vanish = rollForSlow = rollForNinja = rollForBooYa = ninjaMsg = booYaMsg = offScreenReset = displayMsg1 = displayMsg2 = displayMsg3 = false;
+    moveL = moveR = collided = slow = vanish = rollForSlow = rollForNinja = rollForBooYa = ninjaMsg = booYaMsg = offScreenReset = displayMsg1 = displayMsg2 = displayMsg3 = dontPlayMeMsg = false;
     
     player.setup(xPosPlayerDefault, groundY);
     
@@ -63,6 +65,8 @@ void testApp::update(){
         }
         
         if (booYaCounter > 0) booYaCounter -= 1/framerate;
+        if (dontPlayMeMsgCounter > 0) dontPlayMeMsgCounter -= 1/framerate;
+        else dontPlayMeMsg = false;
         
         if (slow) framerate = frameRateSlow;
         else framerate = framerateNormal;
@@ -250,12 +254,13 @@ void testApp::draw(){
             ofLine(0, groundY, ofGetWidth(), groundY);
             
             // Draw messages:
-            if (slow || ninjaMsg || booYaMsg) {
+            if (slow || ninjaMsg || booYaMsg || dontPlayMeMsg) {
                 string string;
                 ofLine(mouthX, mouthY, msgX, msgY); // Line to "speech bubble."
                 if (slow) string = "I do it slow, bro!"; // Write a message if there's slow motion.
                 if (ninjaMsg) string = "Poof! Like a ninja, bro!"; // Write a message sometimes upon vanishing.
                 if (booYaMsg) string = "Booya, bro!"; // Write a message sometimes upon defeating enemy.
+                if (dontPlayMeMsg) string = "Don't play me, bro!"; // Write a message when the player tries to control the game.
                 ofDrawBitmapString(string, textX, textY);
             }
             
@@ -263,7 +268,7 @@ void testApp::draw(){
             ofDrawBitmapString("Bro Points: MAXED OUT!", 25, 25);
             
             // Describe the controls:
-            ofDrawBitmapString("CONTROLS:\n[A]/[D] or [LEFT]/[RIGHT] to move.\n[SPACE] to jump.\n[SPACE] while jumping to attack.\n[R] to restart if things get crazy.", 25, ofGetHeight()-70);
+            ofDrawBitmapString("CONTROLS:\n[A]/[D] or [LEFT]/[RIGHT] to move.\n[SPACE] to jump.\n[SPACE] at top of jump to attack.\n[R] to restart if things get crazy.", 25, ofGetHeight()-70);
             
             // Describe the goal:
             ofDrawBitmapString("Help Square defeat all the circles in\norder to unleash the Ultimate Attack.\n\nOnce the Attack completes, the\ngame restarts, so watch closely!", ofGetWidth()-350, ofGetHeight()-70);
@@ -332,6 +337,10 @@ void testApp::keyPressed(int key){
                 else if (displayMsg2) displayMsg2 = false;
                 else if (canDisplayMsg3) displayMsg3 = true;
                 else if (displayMsg3) displayMsg3 = false;
+                else if (!slow && !ninjaMsg && !booYaMsg) {
+                    dontPlayMeMsg = true;
+                    dontPlayMeMsgCounter = dontPlayMeMsgCounterLimit;
+                }
             }
             allowAdvance = false; // This prevents advancing by holding the key.
             break;

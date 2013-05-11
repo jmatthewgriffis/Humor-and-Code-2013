@@ -21,10 +21,10 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
     
-    float framerate, framerateNormal, frameRateSlow, xPosPlayerDefault, originX, originY, groundY, moveSpeed, enemyRate, enemyRateCounter, maxEnemies, xeno, mouthX, mouthY, msgX, msgY, textX, textY, booYaCounter, booYaCounterLimit, youWonCounter, youWonCounterLimit;
+    float framerate, framerateNormal, frameRateSlow, xPosPlayerDefault, originX, originY, groundY, moveSpeed, enemyRate, enemyRateCounter, maxEnemies, xeno, mouthX, mouthY, msgX, msgY, textX, textY, booYaCounter, booYaCounterLimit, youWonCounter, youWonCounterLimit, dontPlayMeMsgCounter, dontPlayMeMsgCounterLimit;
     int storeI; // Store a specific value of i for a vector.
     int enemiesDefeated, totalToWin;
-    bool titleScreen, moveL, moveR, collided, slow, vanish, rollForSlow, rollForNinja, rollForBooYa, ninjaMsg, booYaMsg, offScreenReset, canDisplayMsg1, displayMsg1, canDisplayMsg2, displayMsg2, canDisplayMsg3, displayMsg3, allowAdvance;
+    bool titleScreen, moveL, moveR, collided, slow, vanish, rollForSlow, rollForNinja, rollForBooYa, ninjaMsg, booYaMsg, offScreenReset, canDisplayMsg1, displayMsg1, canDisplayMsg2, displayMsg2, canDisplayMsg3, displayMsg3, allowAdvance, dontPlayMeMsg;
     
     player player;
     vector<enemy_grunt> enemies; // Make a dynamic array for enemy objects...
