@@ -13,9 +13,12 @@ class distraction {
     
 public:
     
-    void setup();
+    void setup(float x, float y);
     void update();
     void draw();
+    
+    float xPos, yPos;
+    int wide, tall, xVel, yVel, marginH, marginV;
     
 };
 

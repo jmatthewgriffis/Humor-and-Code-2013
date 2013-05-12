@@ -32,7 +32,7 @@ void testApp::setup(){
     
     // Ints:
     storeI = 0;
-    enemiesDefeated = 0;
+    enemiesDefeated = 49;
     totalToWin = 50;
     
     // Bools:
@@ -197,7 +197,11 @@ void testApp::update(){
         
         // If the player defeats all the enemies, cue the win screen, then restart the game:
         if (enemiesDefeated >= totalToWin) youWonCounter += 1/framerate;
-        if (youWonCounter >= youWonCounterLimit) setup();
+        if (youWonCounter >= youWonCounterLimit) {
+            // Clear out the vector:
+            for (int i=0; i<enemies.size(); i++) enemies.erase(enemies.begin(), enemies.end());
+            setup();
+        }
         
     }
     
