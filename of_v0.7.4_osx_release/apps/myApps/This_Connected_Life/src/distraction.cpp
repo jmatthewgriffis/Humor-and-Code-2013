@@ -12,6 +12,9 @@
 //--------------------------------------------------------------
 void distraction::setup(float x, float y) {
     
+    color.r = 0;
+    color.g = 0;
+    color.b = 255;
     xPos = x;
     yPos = y;
     xVel = yVel = 5;
@@ -37,7 +40,7 @@ void distraction::update() {
 //--------------------------------------------------------------
 void distraction::draw() {
     
-    ofSetColor(0, 0, 255);
+    ofSetColor(color);
     ofRect(xPos, yPos, wide, tall);
     ofSetColor(255);
     

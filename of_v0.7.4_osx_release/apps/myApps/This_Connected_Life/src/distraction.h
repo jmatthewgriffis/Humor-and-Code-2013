@@ -17,6 +17,7 @@ public:
     void update();
     void draw();
     
+    ofColor color;
     float xPos, yPos;
     int wide, tall, xVel, yVel, marginH, marginV;
     
