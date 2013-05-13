@@ -17,7 +17,7 @@ void distraction::setup(float x, float y) {
     color.b = 255;
     xPos = x;
     yPos = y;
-    xVel = yVel = 5;
+    xVel = yVel = 1;
     wide = 50;
     tall = wide;
     marginH = 30; // Distance from sides of window to sides of iPhone screen.

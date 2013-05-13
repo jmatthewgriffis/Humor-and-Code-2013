@@ -36,8 +36,8 @@ void testApp::setup(){
     totalToWin = 50;
     
     // Bools:
-    titleScreen = canDisplayMsg1 = canDisplayMsg2 = canDisplayMsg3 = allowAdvance = true;
-    moveL = moveR = collided = slow = vanish = rollForSlow = rollForNinja = rollForBooYa = ninjaMsg = booYaMsg = offScreenReset = displayMsg1 = displayMsg2 = displayMsg3 = dontPlayMeMsg = false;
+    titleScreen = allowAdvance = true;
+    moveL = moveR = collided = slow = vanish = rollForSlow = rollForNinja = rollForBooYa = ninjaMsg = booYaMsg = offScreenReset = displayMsg1 = displayMsg2 = displayMsg3 = dontPlayMeMsg = canDisplayMsg1 = canDisplayMsg2 = canDisplayMsg3 = false;
     
     player.setup(xPosPlayerDefault, groundY);
     
@@ -234,17 +234,17 @@ void testApp::draw(){
         
         if (displayMsg1) {
             canDisplayMsg1 = false;
-            ofDrawBitmapString("Whoa there, bro. Whoa.\n\nI see what you're doing, bro. You\nsee what's up and you want to help.\nHey, I appreciate it, bro.\n\nBut don't worry -- I got this!\nJust hit [SPACE], sit back and\nlet me show you how it's done.", ofGetWidth()/2-230, ofGetHeight()/2-60);
+            ofDrawBitmapString("Whoa there, bro. Whoa.\n\nI see what you're doing, bro. You\nsee what's up and you want to help.\nHey, I appreciate it, bro.\n\nBut don't worry -- I got this!\nJust hit [O] for 'OK,' sit back and\nlet me show you how it's done.", ofGetWidth()/2-230, ofGetHeight()/2-60);
         }
         
         else if (displayMsg2) {
             canDisplayMsg2 = false;
-            ofDrawBitmapString("Now bro, I admire your enthusiasm.\nI really do. That's why we're bros, bro!\n\nBut let's be honest here.\nWe both know your 'helping'\nwill only interfere, bro.\n\nI'm doing some cool stuff, right bro?\nDo you know how to do that stuff?\n\nBro. You do not.\n\nLet's just forget about this, hit [SPACE],\nand you can cheer me on, bro!\nI can't do it without you!", ofGetWidth()/2-230, ofGetHeight()/2-125);
+            ofDrawBitmapString("Now bro, I admire your enthusiasm.\nI really do. That's why we're bros, bro!\n\nBut let's be honest here.\nWe both know your 'helping'\nwill only interfere, bro.\n\nI'm doing some cool stuff, right bro?\nDo you know how to do that stuff?\n\nBro. You do not.\n\nLet's just forget about this, hit [O],\nand you can cheer me on, bro!\nI can't do it without you!", ofGetWidth()/2-230, ofGetHeight()/2-125);
         }
         
         else if (displayMsg3) {
             canDisplayMsg3 = false;
-            ofDrawBitmapString("Bro! FOR SERIOUS, BRO.\nKNOCK IT OFF.\n\nI'm not sure you're listening.\nThis action is too complex for you,\na'ight bro?\n\nI'm just trying to make it easier\non you so you can have more fun.\nDon't you see that, bro?\nLet me take care of things\nand we'll all have a good time;\notherwise it's challenge,\nfrustration and anger, bro.\n\nNow, I need you to press [SPACE], and\nthen everything will be chill, bro.", ofGetWidth()/2-230, ofGetHeight()/2-175);
+            ofDrawBitmapString("Bro! FOR SERIOUS, BRO.\nKNOCK IT OFF.\n\nI'm not sure you're listening.\nThis action is too complex for you,\na'ight bro?\n\nI'm just trying to make it easier\non you so you can have more fun.\nDon't you see that, bro?\nLet me take care of things\nand we'll all have a good time;\notherwise it's challenge,\nfrustration and anger, bro.\n\nNow, I need you to press [O], and\nthen everything will be chill, bro.", ofGetWidth()/2-230, ofGetHeight()/2-175);
         }
         
     }
@@ -261,9 +261,9 @@ void testApp::draw(){
             if (slow || ninjaMsg || booYaMsg || dontPlayMeMsg) {
                 string string;
                 ofLine(mouthX, mouthY, msgX, msgY); // Line to "speech bubble."
-                if (slow) string = "I do it slow, bro!"; // Write a message if there's slow motion.
-                if (ninjaMsg) string = "Poof! Like a ninja, bro!"; // Write a message sometimes upon vanishing.
-                if (booYaMsg) string = "Booya, bro!"; // Write a message sometimes upon defeating enemy.
+                if (slow && !dontPlayMeMsg) string = "I do it slow, bro!"; // Write a message if there's slow motion.
+                if (ninjaMsg && !dontPlayMeMsg) string = "Poof! Like a ninja, bro!"; // Write a message sometimes upon vanishing.
+                if (booYaMsg && !dontPlayMeMsg) string = "Booya, bro!"; // Write a message sometimes upon defeating enemy.
                 if (dontPlayMeMsg) string = "Don't play me, bro!"; // Write a message when the player tries to control the game.
                 ofDrawBitmapString(string, textX, textY);
             }
@@ -315,7 +315,14 @@ void testApp::draw(){
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
     
-    // Enable movement on keyPress:
+    if (key == ' ') {
+        if (titleScreen) {
+            titleScreen = false;
+            canDisplayMsg1 = true;
+            allowAdvance = false; // This prevents advancing by holding the key.
+        }
+    }
+    
     switch (key) {
             
             // Debug - generate an enemy on command:
@@ -325,7 +332,7 @@ void testApp::keyPressed(int key){
              enemies.push_back(enemy);
              break;*/
             
-            // Trigger/advance messages where appropriate:
+            // Trigger messages where appropriate:
         case 'a':
         case 'A':
         case OF_KEY_LEFT:
@@ -334,18 +341,41 @@ void testApp::keyPressed(int key){
         case OF_KEY_RIGHT:
         case ' ':
             if (allowAdvance) {
-                if (titleScreen) titleScreen = false;
-                else if (canDisplayMsg1) displayMsg1 = true;
-                else if (displayMsg1) displayMsg1 = false;
-                else if (canDisplayMsg2) displayMsg2 = true;
-                else if (displayMsg2) displayMsg2 = false;
-                else if (canDisplayMsg3) displayMsg3 = true;
-                else if (displayMsg3) displayMsg3 = false;
-                else if (!slow && !ninjaMsg && !booYaMsg) {
-                    dontPlayMeMsg = true;
-                    dontPlayMeMsgCounter = dontPlayMeMsgCounterLimit;
+                if (!titleScreen && youWonCounter == 0) {
+                    if (canDisplayMsg1) {
+                        displayMsg1 = true;
+                        canDisplayMsg1 = false;
+                    }
+                    else if (canDisplayMsg2) {
+                        displayMsg2 = true;
+                        canDisplayMsg2 = false;
+                    }
+                    else if (canDisplayMsg3) {
+                        displayMsg3 = true;
+                        canDisplayMsg3 = false;
+                    }
+                    else if (!displayMsg1 && !displayMsg2 && !displayMsg3) {
+                        dontPlayMeMsg = true;
+                        dontPlayMeMsgCounter = dontPlayMeMsgCounterLimit;
+                    }
                 }
+                allowAdvance = false; // This prevents advancing by holding the key.
             }
+            break;
+            
+            // Advance messages where appropriate:
+        case 'o':
+        case 'O':
+            // Do something.
+            if (displayMsg1) {
+                canDisplayMsg2 = true;
+                displayMsg1 = false;
+            }
+            else if (displayMsg2) {
+                canDisplayMsg3 = true;
+                displayMsg2 = false;
+            }
+            else if (displayMsg3) displayMsg3 = false;
             allowAdvance = false; // This prevents advancing by holding the key.
             break;
             
@@ -362,7 +392,6 @@ void testApp::keyPressed(int key){
 //--------------------------------------------------------------
 void testApp::keyReleased(int key){
     
-    // Disable movement on keyRelease:
     switch (key) {
         case 'a':
         case 'A':
@@ -371,6 +400,8 @@ void testApp::keyReleased(int key){
         case 'D':
         case OF_KEY_RIGHT:
         case ' ':
+        case 'o':
+        case 'O':
             allowAdvance = true;
             break;
     }

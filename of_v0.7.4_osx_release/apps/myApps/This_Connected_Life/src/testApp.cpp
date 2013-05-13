@@ -19,7 +19,6 @@ void testApp::update(){
     
     for (int i=0; i<myDistractions.size(); i++) {
         
-        myDistractions[i].color.r = 0;
         myDistractions[i].update();
         
         for (int j=i+1; j<myDistractions.size(); j++) {
@@ -28,6 +27,10 @@ void testApp::update(){
                 myDistractions[i].color.r = 255;
                 myDistractions[j].color.r = 255;
                 
+            }
+            else {
+                myDistractions[i].color.r = 0;
+                myDistractions[j].color.r = 0;
             }
         }
     }
