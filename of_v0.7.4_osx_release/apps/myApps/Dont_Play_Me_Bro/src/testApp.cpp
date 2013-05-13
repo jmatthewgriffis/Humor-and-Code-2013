@@ -13,6 +13,9 @@ void testApp::setup(){
     ofSetRectMode(OF_RECTMODE_CENTER);
     ofNoFill();
     
+    gameFontBig.loadFont("bro.ttf", 24); // http://www.dafont.com/base-02.font?text=COME+AT+ME+BRO
+    gameFontSmall.loadFont("bro.ttf", 12);
+    
     // Floats:
     xPosPlayerDefault = ofGetWidth()/2-ofGetWidth()/4;
     originX = originY = 0;
@@ -32,8 +35,8 @@ void testApp::setup(){
     
     // Ints:
     storeI = 0;
-    enemiesDefeated = 49;
-    totalToWin = 50;
+    enemiesDefeated = 0;
+    totalToWin = 25;
     
     // Bools:
     titleScreen = allowAdvance = true;
@@ -215,10 +218,12 @@ void testApp::draw(){
     if (titleScreen) {
         
         // Draw the title:
-        ofDrawBitmapString(" -- Don't Play Me, Bro! --\n\n\n\n\n\na game by J. Matthew Griffis\n\n\n\n\n\n  Press [SPACE] to start.", ofGetWidth()/2-100, ofGetHeight()/2-75);
+        gameFontBig.drawString("Dont Play Me Bro!\n\n\n\n\n\n\n      a game by J. Matthew Griffis\n\n\n\n\n\n\n                  Press SPACE to start.", ofGetWidth()/2-400, ofGetHeight()/2-180);
+        //ofDrawBitmapString(" -- Don't Play Me, Bro! --\n\n\n\n\n\na game by J. Matthew Griffis\n\n\n\n\n\n  Press [SPACE] to start.", ofGetWidth()/2-100, ofGetHeight()/2-75);
         
         // Draw the copyright:
-        ofDrawBitmapString("(c) 2013 J. Matthew Griffis", ofGetWidth()/2-100, ofGetHeight()-25);
+        gameFontSmall.drawString("Copyright 2013 J. Matthew Griffis", 5, ofGetHeight());
+        //ofDrawBitmapString("(c) 2013 J. Matthew Griffis", ofGetWidth()/2-100, ofGetHeight()-25);
         
     }
     
@@ -234,17 +239,20 @@ void testApp::draw(){
         
         if (displayMsg1) {
             canDisplayMsg1 = false;
-            ofDrawBitmapString("Whoa there, bro. Whoa.\n\nI see what you're doing, bro. You\nsee what's up and you want to help.\nHey, I appreciate it, bro.\n\nBut don't worry -- I got this!\nJust hit [O] for 'OK,' sit back and\nlet me show you how it's done.", ofGetWidth()/2-230, ofGetHeight()/2-60);
+            gameFontSmall.drawString("Whoa there, bro. Whoa.\n\nI see what your doing, bro. You\nsee whats up and you want to help.\nHey, I appreciate it, bro.\n\nBut dont worry: I got this!\nJust hit O for OK, sit back and\nlet me show you how its done.", ofGetWidth()/2-230, ofGetHeight()/2-100);
+            //ofDrawBitmapString("Whoa there, bro. Whoa.\n\nI see what you're doing, bro. You\nsee what's up and you want to help.\nHey, I appreciate it, bro.\n\nBut don't worry -- I got this!\nJust hit [O] for 'OK,' sit back and\nlet me show you how it's done.", ofGetWidth()/2-230, ofGetHeight()/2-60);
         }
         
         else if (displayMsg2) {
             canDisplayMsg2 = false;
-            ofDrawBitmapString("Now bro, I admire your enthusiasm.\nI really do. That's why we're bros, bro!\n\nBut let's be honest here.\nWe both know your 'helping'\nwill only interfere, bro.\n\nI'm doing some cool stuff, right bro?\nDo you know how to do that stuff?\n\nBro. You do not.\n\nLet's just forget about this, hit [O],\nand you can cheer me on, bro!\nI can't do it without you!", ofGetWidth()/2-230, ofGetHeight()/2-125);
+            gameFontSmall.drawString("Now bro, I admire your enthusiasm.\nI really do. Thats why we be bros, bro!\n\nBut lets be honest here.\nWe both know your...helping\nwill only interfere, bro.\n\nIm doing some cool stuff, right bro?\nDo you know how to do that stuff?\n\nBro. You do not.\n\nLets just forget about this, hit O,\nand you can cheer me on, bro!\nI cant do it without you!", ofGetWidth()/2-230, ofGetHeight()/2-200);
+            //ofDrawBitmapString("Now bro, I admire your enthusiasm.\nI really do. That's why we're bros, bro!\n\nBut let's be honest here.\nWe both know your 'helping'\nwill only interfere, bro.\n\nI'm doing some cool stuff, right bro?\nDo you know how to do that stuff?\n\nBro. You do not.\n\nLet's just forget about this, hit [O],\nand you can cheer me on, bro!\nI can't do it without you!", ofGetWidth()/2-230, ofGetHeight()/2-125);
         }
         
         else if (displayMsg3) {
             canDisplayMsg3 = false;
-            ofDrawBitmapString("Bro! FOR SERIOUS, BRO.\nKNOCK IT OFF.\n\nI'm not sure you're listening.\nThis action is too complex for you,\na'ight bro?\n\nI'm just trying to make it easier\non you so you can have more fun.\nDon't you see that, bro?\nLet me take care of things\nand we'll all have a good time;\notherwise it's challenge,\nfrustration and anger, bro.\n\nNow, I need you to press [O], and\nthen everything will be chill, bro.", ofGetWidth()/2-230, ofGetHeight()/2-175);
+            gameFontSmall.drawString("Bro! FOR SERIOUS BRO.\nKNOCK IT OFF.\n\nIm not sure your listening.\nThis action is too complex for you,\naight bro?\n\nIm just trying to make it easier\non you so you can have more fun.\nDont you see that, bro?\nLet me take care of things\nand well all have a good time;\notherwise its challenge,\nfrustration and anger, bro.\n\nNow, I need you to press O, and\nthen everything will be chill, bro.", ofGetWidth()/2-230, ofGetHeight()/2-250);
+            //ofDrawBitmapString("Bro! FOR SERIOUS, BRO.\nKNOCK IT OFF.\n\nI'm not sure you're listening.\nThis action is too complex for you,\na'ight bro?\n\nI'm just trying to make it easier\non you so you can have more fun.\nDon't you see that, bro?\nLet me take care of things\nand we'll all have a good time;\notherwise it's challenge,\nfrustration and anger, bro.\n\nNow, I need you to press [O], and\nthen everything will be chill, bro.", ofGetWidth()/2-230, ofGetHeight()/2-175);
         }
         
     }
@@ -264,8 +272,9 @@ void testApp::draw(){
                 if (slow && !dontPlayMeMsg) string = "I do it slow, bro!"; // Write a message if there's slow motion.
                 if (ninjaMsg && !dontPlayMeMsg) string = "Poof! Like a ninja, bro!"; // Write a message sometimes upon vanishing.
                 if (booYaMsg && !dontPlayMeMsg) string = "Booya, bro!"; // Write a message sometimes upon defeating enemy.
-                if (dontPlayMeMsg) string = "Don't play me, bro!"; // Write a message when the player tries to control the game.
-                ofDrawBitmapString(string, textX, textY);
+                if (dontPlayMeMsg) string = "Dont play me bro!"; // Write a message when the player tries to control the game.
+                gameFontSmall.drawString(string, textX, textY);
+                //ofDrawBitmapString(string, textX, textY);
             }
             
             // Indicate the number of Bro Points:
@@ -301,7 +310,8 @@ void testApp::draw(){
             // Draw some messages:
             ofDrawBitmapString("-- ERROR: ULTIMATE ATTACK DOES NOT EXIST. --", ofGetWidth()/2-160, ofGetHeight()/2-100);
             
-            ofDrawBitmapString("I played you, bro!\n\n   HA! HA! HA!\n   So funny!\n   Square out.", ofGetWidth()/2-75, ofGetHeight()/2);
+            gameFontSmall.drawString("I played you, bro!\n\n   HA! HA! HA!\n   So funny!\n   Square out.", ofGetWidth()/2-75, ofGetHeight()/2-25);
+            //ofDrawBitmapString("I played you, bro!\n\n   HA! HA! HA!\n   So funny!\n   Square out.", ofGetWidth()/2-75, ofGetHeight()/2);
             // Draw the player at a larger scale in fixed position:
             ofRect(ofGetWidth()/2+200, ofGetHeight()/2+200, 100, 100);
             // Connect the player and the message:
