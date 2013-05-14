@@ -15,6 +15,7 @@ void testApp::setup(){
     
     gameFontBig.loadFont("bro.ttf", 24); // http://www.dafont.com/base-02.font?text=COME+AT+ME+BRO
     gameFontSmall.loadFont("bro.ttf", 12);
+    helv.loadFont("helvetica.otf", 12);
     
     // Floats:
     xPosPlayerDefault = ofGetWidth()/2-ofGetWidth()/4;
@@ -222,7 +223,7 @@ void testApp::draw(){
         //ofDrawBitmapString(" -- Don't Play Me, Bro! --\n\n\n\n\n\na game by J. Matthew Griffis\n\n\n\n\n\n  Press [SPACE] to start.", ofGetWidth()/2-100, ofGetHeight()/2-75);
         
         // Draw the copyright:
-        gameFontSmall.drawString("Copyright 2013 J. Matthew Griffis", 5, ofGetHeight());
+        gameFontSmall.drawString("Copyright 2013 J. Matthew Griffis", 0, ofGetHeight());
         //ofDrawBitmapString("(c) 2013 J. Matthew Griffis", ofGetWidth()/2-100, ofGetHeight()-25);
         
     }
@@ -278,16 +279,20 @@ void testApp::draw(){
             }
             
             // Indicate the number of Bro Points:
-            ofDrawBitmapString("Bro Points: MAXED OUT!", 25, 25);
+            helv.drawString("Bro Points: MAXED OUT!", 10, 20);
+            //ofDrawBitmapString("Bro Points: MAXED OUT!", 25, 25);
             
             // Describe the controls:
-            ofDrawBitmapString("CONTROLS:\n[A]/[D] or [LEFT]/[RIGHT] to move.\n[SPACE] to jump.\n[SPACE] at top of jump to attack.\n[R] to restart if things get crazy.", 25, ofGetHeight()-70);
+            helv.drawString("CONTROLS:\nA/D or LEFT/RIGHT to move.\nSPACE to jump.\nSPACE at top of jump to attack.\nR to restart if things get crazy.", 10, ofGetHeight()-80);
+            //ofDrawBitmapString("CONTROLS:\n[A]/[D] or [LEFT]/[RIGHT] to move.\n[SPACE] to jump.\n[SPACE] at top of jump to attack.\n[R] to restart if things get crazy.", 25, ofGetHeight()-70);
             
             // Describe the goal:
-            ofDrawBitmapString("Help Square defeat all the circles in\norder to unleash the Ultimate Attack.\n\nOnce the Attack completes, the\ngame restarts, so watch closely!", ofGetWidth()-350, ofGetHeight()-70);
+            helv.drawString("Help Square defeat all the circles in\norder to unleash the Ultimate Attack.\n\nOnce the Attack completes, the\ngame restarts, so watch closely!", ofGetWidth()-295, ofGetHeight()-80);
+            //ofDrawBitmapString("Help Square defeat all the circles in\norder to unleash the Ultimate Attack.\n\nOnce the Attack completes, the\ngame restarts, so watch closely!", ofGetWidth()-350, ofGetHeight()-70);
             
             // Keep an onscreen count of enemies defeated and progress towards goal:
-            ofDrawBitmapString("Vicious circles defeated: " + ofToString(enemiesDefeated) + " / " + ofToString(totalToWin), ofGetWidth()-290, 25);
+            helv.drawString("Vicious circles defeated: " + ofToString(enemiesDefeated) + " / " + ofToString(totalToWin), ofGetWidth()-260, 20);
+            //ofDrawBitmapString("Vicious circles defeated: " + ofToString(enemiesDefeated) + " / " + ofToString(totalToWin), ofGetWidth()-290, 25);
             
             // The player stays in one place and everything else translates as the player "moves":
             ofPushMatrix();
@@ -308,7 +313,8 @@ void testApp::draw(){
         else {
             
             // Draw some messages:
-            ofDrawBitmapString("-- ERROR: ULTIMATE ATTACK DOES NOT EXIST. --", ofGetWidth()/2-160, ofGetHeight()/2-100);
+            helv.drawString("ERROR: ULTIMATE ATTACK DOES NOT EXIST.", ofGetWidth()/2-180, ofGetHeight()/2-100);
+            //ofDrawBitmapString("-- ERROR: ULTIMATE ATTACK DOES NOT EXIST. --", ofGetWidth()/2-160, ofGetHeight()/2-100);
             
             gameFontSmall.drawString("I played you, bro!\n\n   HA! HA! HA!\n   So funny!\n   Square out.", ofGetWidth()/2-75, ofGetHeight()/2-25);
             //ofDrawBitmapString("I played you, bro!\n\n   HA! HA! HA!\n   So funny!\n   Square out.", ofGetWidth()/2-75, ofGetHeight()/2);

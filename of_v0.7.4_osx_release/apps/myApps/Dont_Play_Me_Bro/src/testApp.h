@@ -26,7 +26,7 @@ public:
     int enemiesDefeated, totalToWin;
     bool titleScreen, moveL, moveR, collided, slow, vanish, rollForSlow, rollForNinja, rollForBooYa, ninjaMsg, booYaMsg, offScreenReset, canDisplayMsg1, displayMsg1, canDisplayMsg2, displayMsg2, canDisplayMsg3, displayMsg3, allowAdvance, dontPlayMeMsg, pickMsg;
     
-    ofTrueTypeFont gameFontBig, gameFontSmall;
+    ofTrueTypeFont gameFontBig, gameFontSmall, helv;
     player player;
     vector<enemy_grunt> enemies; // Make a dynamic array for enemy objects...
     
