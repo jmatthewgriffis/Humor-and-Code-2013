@@ -66,10 +66,10 @@ void testApp::update(){
     if (!titleScreen && !displayMsg1 && !displayMsg2 && !displayMsg3) {
         
         // If the player goes offscreen, reset to the default position:
-        if (player.xPos < -player.wide || player.xPos > ofGetWidth()+player.wide) {
+        /*if (player.xPos < -player.wide || player.xPos > ofGetWidth()+player.wide) {
             player.xPos = xPosPlayerDefault;
             player.yPos = player.onGround;
-        }
+        }*/
         
         if (booYaCounter > 0) booYaCounter -= 1/framerate;
         if (dontPlayMeMsgCounter > 0) dontPlayMeMsgCounter -= 1/framerate;
