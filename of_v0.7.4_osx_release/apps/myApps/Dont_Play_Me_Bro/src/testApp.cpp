@@ -16,6 +16,7 @@ void testApp::setup(){
     gameFontBig.loadFont("bro.ttf", 24); // http://www.dafont.com/base-02.font?text=COME+AT+ME+BRO
     gameFontSmall.loadFont("bro.ttf", 12);
     helv.loadFont("helvetica.otf", 12);
+    helvBig.loadFont("helvetica.otf", 24);
     
     // Floats:
     xPosPlayerDefault = ofGetWidth()/2-ofGetWidth()/4;
@@ -33,6 +34,8 @@ void testApp::setup(){
     youWonCounterLimit = 10; // Number of seconds the winning message appears.
     dontPlayMeMsgCounter = 0;
     dontPlayMeMsgCounterLimit = 1;
+    secondCounter = 0;
+    demoCounter = demoCounterLimit = 20; // Number of seconds to run "demo mode."
     
     // Ints:
     storeI = 0;
@@ -41,7 +44,7 @@ void testApp::setup(){
     
     // Bools:
     titleScreen = allowAdvance = true;
-    moveL = moveR = collided = slow = vanish = rollForSlow = rollForNinja = rollForBooYa = ninjaMsg = booYaMsg = offScreenReset = displayMsg1 = displayMsg2 = displayMsg3 = dontPlayMeMsg = canDisplayMsg1 = canDisplayMsg2 = canDisplayMsg3 = false;
+    moveL = moveR = collided = slow = vanish = rollForSlow = rollForNinja = rollForBooYa = ninjaMsg = booYaMsg = offScreenReset = displayMsg1 = displayMsg2 = displayMsg3 = dontPlayMeMsg = canDisplayMsg1 = canDisplayMsg2 = canDisplayMsg3 = demo = false;
     
     player.setup(xPosPlayerDefault, groundY);
     
@@ -71,6 +74,14 @@ void testApp::update(){
         if (booYaCounter > 0) booYaCounter -= 1/framerate;
         if (dontPlayMeMsgCounter > 0) dontPlayMeMsgCounter -= 1/framerate;
         else dontPlayMeMsg = false;
+        if (demo) {
+            secondCounter ++;
+            if (secondCounter >= framerate) {
+                demoCounter--;
+                secondCounter = 0;
+            }
+            if (demoCounter <= 0) demo = false;
+        }
         
         if (slow) framerate = frameRateSlow;
         else framerate = framerateNormal;
@@ -307,6 +318,11 @@ void testApp::draw(){
             
             player.draw();
             
+            if (demo) {
+                helvBig.drawString("DEMO MODE", ofGetWidth()/2-100, ofGetHeight()/2-125);
+                helv.drawString("Take a moment to observe the screen and learn the controls.\n\n           Gameplay will begin in " + ofToString(demoCounter) + " seconds.\n\n                 (Press P to start now.)", ofGetWidth()/2-225, ofGetHeight()/2-50);
+            }
+            
         }
         
         // The end screen:
@@ -334,10 +350,13 @@ void testApp::keyPressed(int key){
     if (key == ' ') {
         if (titleScreen) {
             titleScreen = false;
+            demo = true;
             canDisplayMsg1 = true;
             allowAdvance = false; // This prevents advancing by holding the key.
         }
     }
+    
+    if ((key == 'p' || key == 'P') && demo) demo = false;
     
     switch (key) {
             
@@ -356,7 +375,7 @@ void testApp::keyPressed(int key){
         case 'D':
         case OF_KEY_RIGHT:
         case ' ':
-            if (allowAdvance) {
+            if (allowAdvance && !demo) {
                 if (!titleScreen && youWonCounter == 0) {
                     if (canDisplayMsg1) {
                         displayMsg1 = true;
@@ -383,16 +402,18 @@ void testApp::keyPressed(int key){
         case 'o':
         case 'O':
             // Do something.
-            if (displayMsg1) {
-                canDisplayMsg2 = true;
-                displayMsg1 = false;
+            if (!demo) {
+                if (displayMsg1) {
+                    canDisplayMsg2 = true;
+                    displayMsg1 = false;
+                }
+                else if (displayMsg2) {
+                    canDisplayMsg3 = true;
+                    displayMsg2 = false;
+                }
+                else if (displayMsg3) displayMsg3 = false;
+                allowAdvance = false; // This prevents advancing by holding the key.
             }
-            else if (displayMsg2) {
-                canDisplayMsg3 = true;
-                displayMsg2 = false;
-            }
-            else if (displayMsg3) displayMsg3 = false;
-            allowAdvance = false; // This prevents advancing by holding the key.
             break;
             
             // Restart the game:
