@@ -21,6 +21,7 @@ public:
     void gotMessage(ofMessage msg);
     
     int verticalRez;
+    bool drawbox;
     
     ofImage iPhone;
     vector<distraction> myDistractions;

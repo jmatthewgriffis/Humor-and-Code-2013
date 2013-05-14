@@ -9,6 +9,7 @@ void testApp::setup(){
     ofSetFrameRate(60);
     ofSetRectMode(OF_RECTMODE_CENTER);
     verticalRez = 768;
+    drawbox = false;
     
     iPhone.loadImage("iphone.jpg");
     
@@ -17,6 +18,8 @@ void testApp::setup(){
 //--------------------------------------------------------------
 void testApp::update(){
     
+    drawbox = false;
+    
     for (int i=0; i<myDistractions.size(); i++) {
         
         myDistractions[i].update();
@@ -24,13 +27,23 @@ void testApp::update(){
         for (int j=i+1; j<myDistractions.size(); j++) {
             if (myDistractions[i].xPos-myDistractions[i].wide/2 <= myDistractions[j].xPos+myDistractions[j].wide/2 && myDistractions[i].xPos+myDistractions[i].wide/2 > myDistractions[j].xPos-myDistractions[j].wide/2 && myDistractions[i].yPos-myDistractions[i].tall/2 <= myDistractions[j].yPos+myDistractions[j].tall/2 && myDistractions[i].yPos+myDistractions[i].tall/2 > myDistractions[j].yPos-myDistractions[j].tall/2) {
                 
-                myDistractions[i].color.r = 255;
-                myDistractions[j].color.r = 255;
+                // If the velocities are in the same direction, do nothing:
+                // xVel
+                if ((myDistractions[i].xVel >= 0 && myDistractions[j].xVel >= 0) || (myDistractions[i].xVel < 0 && myDistractions[j].xVel < 0)) {}
+                else {
+                    myDistractions[i].xVel *= -1;
+                    myDistractions[j].xVel *= -1;
+                }
+                // yVel
+                if ((myDistractions[i].yVel >= 0 && myDistractions[j].yVel >= 0) || (myDistractions[i].yVel < 0 && myDistractions[j].yVel < 0)) {}
+                else {
+                    myDistractions[i].xVel *= -1;
+                    myDistractions[j].xVel *= -1;
+                }
                 
-            }
-            else {
-                myDistractions[i].color.r = 0;
-                myDistractions[j].color.r = 0;
+                myDistractions[i].collided = true;
+                myDistractions[j].collided = true;
+                
             }
         }
     }

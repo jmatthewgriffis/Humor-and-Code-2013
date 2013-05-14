@@ -20,6 +20,7 @@ public:
     ofColor color;
     float xPos, yPos;
     int wide, tall, xVel, yVel, marginH, marginV;
+    bool collided;
     
 };
 
