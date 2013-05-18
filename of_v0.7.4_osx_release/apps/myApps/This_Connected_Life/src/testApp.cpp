@@ -11,9 +11,10 @@ void testApp::setup(){
     ofSetFrameRate(frameRate);
     ofSetRectMode(OF_RECTMODE_CENTER);
     ofEnableAlphaBlending();
+    //ofSetDataPathRoot("data/"); // This is necessary to make a standalone app.
     
     // ints:
-    gameState = 1;
+    gameState = 0;
     timer = 0;
     verticalRez = 768;
     speedy = 1;
@@ -63,11 +64,15 @@ void testApp::update(){
         
         if (powerOn) {
             
+            if (myDistractions.size() > 15) {
             // Draw attention to the power button by fading it in and out:
             powerButton.a += aVel;
             if (powerButton.a >= 255 || powerButton.a <= 0) aVel *= -1;
-            
-            cout<<int(powerButton.a)<<" "<<aVel<<endl;
+            }
+            else {
+                powerButton.a = 0;
+                aVel = 1;
+            }
             
             frameCount++;
             
