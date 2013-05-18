@@ -61,8 +61,8 @@ void testApp::update(){
                 // yVel
                 if ((myDistractions[i].yVel >= 0 && myDistractions[j].yVel >= 0) || (myDistractions[i].yVel < 0 && myDistractions[j].yVel < 0)) {}
                 else {
-                    myDistractions[i].xVel *= -1;
-                    myDistractions[j].xVel *= -1;
+                    myDistractions[i].yVel *= -1;
+                    myDistractions[j].yVel *= -1;
                 }
                 
                 myDistractions[i].collided = true;
