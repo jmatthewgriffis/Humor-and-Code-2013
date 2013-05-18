@@ -35,10 +35,11 @@ void testApp::update(){
     
     drawbox = false;
     
+    // Generate distractions at a set pace with randomized positioning:
     if (timer < timerMax) timer ++;
     else if (timer >= timerMax) {
         distraction distraction;
-        distraction.setup(ofGetWidth()/2, ofGetHeight()/2, 1);
+        distraction.setup(ofRandom(distraction.wide, ofGetWidth()-distraction.wide), ofRandom(distraction.tall, ofGetHeight()-distraction.tall), 1);
         myDistractions.push_back(distraction);
         timer = 0;
     }
