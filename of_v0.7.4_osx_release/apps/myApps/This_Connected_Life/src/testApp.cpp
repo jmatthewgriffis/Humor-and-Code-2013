@@ -123,7 +123,18 @@ void testApp::draw(){
     if (gameState == 0) {
         
         ofSetColor(0);
+        
+        ofPushMatrix();
+        ofTranslate(0, -100);
         font.drawString("Sweet, new phone!", ofGetWidth()/2-108, ofGetHeight()/2);
+        font.drawString("Let's start using it.", ofGetWidth()/2-108, ofGetHeight()/2 + 100);
+        ofSetColor(200);
+        ofRect(ofGetWidth()/2-12, ofGetHeight()/2+142, 50, 35);
+        ofSetColor(255);
+        font.drawString("OK", ofGetWidth()/2-30, ofGetHeight()/2 + 150);
+        ofPopMatrix();
+        
+        ofSetColor(0);
         fontSmall.drawString("This Connected Life ---------------------------\n------- Copyright 2013 J. Matthew Griffis", ofGetWidth()/2-150, ofGetHeight()-127);
         ofSetColor(255);
         
