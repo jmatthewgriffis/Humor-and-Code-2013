@@ -17,7 +17,13 @@ void distraction::setup(float x, float y, int v) {
     color.b = 255;
     xPos = x;
     yPos = y;
-    xVel = yVel = v;
+    
+    // Randomize the direction of velocity:
+    if (ofRandom(1) >= 0.5) xVel = v;
+    else xVel = -v;
+    if (ofRandom(1) > 0.5) yVel = v;
+    else yVel = -v;
+    
     wide = 50;
     tall = wide;
     marginH = 30; // Distance from sides of window to sides of iPhone screen.
