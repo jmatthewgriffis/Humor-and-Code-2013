@@ -18,6 +18,7 @@ public:
     void draw();
     
     ofColor color;
+    ofImage distractionPic;
     float xPos, yPos;
     int wide, tall, xVel, yVel, marginH, marginV;
     bool collided, destroyMe;

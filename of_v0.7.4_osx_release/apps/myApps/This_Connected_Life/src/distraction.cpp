@@ -30,6 +30,8 @@ void distraction::setup(float x, float y, int v) {
     marginV = 105; // Distance from top/bottom of window to top/bottom of iPhone screen.
     collided = destroyMe = false;
     
+    distractionPic.loadImage("distraction.jpg"); // http://1.bp.blogspot.com/-2fjLrL8Wcj8/Thgw_1H9XyI/AAAAAAAAAPA/MSmmxizJutU/s1600/Distraction.jpg
+    
 }
 
 //--------------------------------------------------------------
@@ -60,8 +62,10 @@ void distraction::update() {
 //--------------------------------------------------------------
 void distraction::draw() {
     
-    ofSetColor(color);
-    ofRect(xPos, yPos, wide, tall);
+    //ofSetColor(color);
     ofSetColor(255);
+    //ofRect(xPos, yPos, wide, tall);
+    distractionPic.draw(xPos, yPos, wide, tall);
+    //ofSetColor(255);
     
 }

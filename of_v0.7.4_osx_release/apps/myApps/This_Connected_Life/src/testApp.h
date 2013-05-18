@@ -20,10 +20,10 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
     
-    int timer, verticalRez, frameRate, speedy, timeShifts, shiftLength, maxDistractions;
+    int gameState, timer, verticalRez, frameRate, speedy, timeShifts, shiftLength, maxDistractions;
     float timerMax, increasePace;
     bool powerOn;
-    
+    ofTrueTypeFont font, fontSmall;
     ofImage iPhone;
     vector<distraction> myDistractions;
     
