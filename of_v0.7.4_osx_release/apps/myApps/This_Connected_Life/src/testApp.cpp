@@ -10,15 +10,18 @@ void testApp::setup(){
     ofSetCircleResolution(60);
     ofSetFrameRate(frameRate);
     ofSetRectMode(OF_RECTMODE_CENTER);
+    ofEnableAlphaBlending();
     
     // ints:
-    gameState = 0;
+    gameState = 1;
     timer = 0;
     verticalRez = 768;
     speedy = 1;
     timeShifts = 10;
     shiftLength = 10;
     maxDistractions = 150;
+    frameCount = 0;
+    aVel = 1;
     
     // floats:
     timerMax = 2*frameRate;
@@ -26,6 +29,7 @@ void testApp::setup(){
     
     // bools:
     powerOn = true;
+    chaos = false;
     
     // images:
     iPhone.loadImage("iphone.jpg");
@@ -33,6 +37,12 @@ void testApp::setup(){
     // fonts:
     font.loadFont("helvetica.otf", 18);
     fontSmall.loadFont("helvetica.otf", 12);
+    
+    // colors;
+    powerButton.r = 255;
+    powerButton.g = 0;
+    powerButton.b = 0;
+    powerButton.a = 1;
     
 }
 
@@ -53,20 +63,36 @@ void testApp::update(){
         
         if (powerOn) {
             
-            // Generate distractions at a set pace with randomized positioning:
-            if (timer < timerMax) timer ++;
-            else if (timer >= timerMax && myDistractions.size() < maxDistractions) {
+            // Draw attention to the power button by fading it in and out:
+            powerButton.a += aVel;
+            if (powerButton.a >= 255 || powerButton.a <= 0) aVel *= -1;
+            
+            cout<<int(powerButton.a)<<" "<<aVel<<endl;
+            
+            frameCount++;
+            
+            if (!chaos && myDistractions.size() == 0 && frameCount > frameRate) {
                 distraction distraction;
-                distraction.setup(ofRandom(distraction.wide, ofGetWidth()-distraction.wide), ofRandom(distraction.tall, ofGetHeight()-distraction.tall), speedy);
+                distraction.setup(ofGetWidth()/2, ofGetHeight()/2, 1);
                 myDistractions.push_back(distraction);
-                timer = 0;
             }
             
-            // Change the distractions' speed based on duration of game:
-            for (int i = 0; i < timeShifts; i++) {
-                if (ofGetFrameNum() > frameRate * shiftLength * i) {
-                    if (i < 5) speedy = 1 + i;
-                    timerMax = 2 * frameRate * powf(increasePace, i);
+            if (chaos) {
+                // Generate distractions at a set pace with randomized positioning:
+                if (timer < timerMax) timer ++;
+                else if (timer >= timerMax && myDistractions.size() < maxDistractions) {
+                    distraction distraction;
+                    distraction.setup(ofRandom(distraction.wide, ofGetWidth()-distraction.wide), ofRandom(distraction.tall, ofGetHeight()-distraction.tall), speedy);
+                    myDistractions.push_back(distraction);
+                    timer = 0;
+                }
+                
+                // Change the distractions' speed based on duration of game:
+                for (int i = 0; i < timeShifts; i++) {
+                    if (frameCount > frameRate * shiftLength * i) {
+                        if (i < 5) speedy = 1 + i;
+                        timerMax = 2 * frameRate * powf(increasePace, i);
+                    }
                 }
             }
             
@@ -122,6 +148,8 @@ void testApp::draw(){
     
     if (gameState == 0) {
         
+        // Draw the title screen:
+        
         ofSetColor(0);
         
         ofPushMatrix();
@@ -144,6 +172,37 @@ void testApp::draw(){
         
         if (powerOn) {
             
+            ofSetColor(0);
+            if (!chaos) {
+                font.drawString("The first thing we\n have to learn is", ofGetWidth()/2-110, ofGetHeight()/2-200);
+                if (myDistractions.size() > 0) {
+                    if (frameCount > 120) {
+                        font.drawString("...oh, dear.", ofGetWidth()/2-50, ofGetHeight()/2-100);
+                    }
+                    if (frameCount > 210) {
+                        font.drawString("Well, just click on it\nto make it go away.", ofGetWidth()/2-125, ofGetHeight()/2);
+                    }
+                }
+            }
+            else {
+                
+                if (myDistractions.size() < 5) {
+                    font.drawString("       Great.\nNow we can proceed\nto the most important\n    principles of", ofGetWidth()/2-120, ofGetHeight()/2+50);
+                }
+                if (myDistractions.size() < 10) {
+                    
+                    if (myDistractions.size() > 1) {
+                        font.drawString("Umm...", ofGetWidth()/2-5, ofGetHeight()/2+200);
+                    }
+                    if (myDistractions.size() > 3) {
+                        font.drawString("Yikes.", ofGetWidth()/2-55, ofGetHeight()/2+250);
+                    }
+                    
+                }
+                
+            }
+            ofSetColor(255);
+            
             // Draw those infernal distractions:
             for (int i=0; i<myDistractions.size(); i++) myDistractions[i].draw();
             
@@ -152,8 +211,9 @@ void testApp::draw(){
     } // End gameState = 1.
     
     // Draw a rect over the power button:
-    //ofSetColor(255);
-    //ofRect(ofGetWidth()-ofGetWidth()/4-4, 7, 55, 6);
+    ofSetColor(powerButton);
+    ofRect(ofGetWidth()-ofGetWidth()/4-4, 7, 55, 6);
+    ofSetColor(255);
     
 }
 
@@ -200,6 +260,13 @@ void testApp::mouseDragged(int x, int y, int button){
 //--------------------------------------------------------------
 void testApp::mousePressed(int x, int y, int button){
     
+    if (gameState == 0) {
+        
+        //ofRect(ofGetWidth()/2-12, ofGetHeight()/2+142, 50, 35);
+        if (mouseX >= ofGetWidth()/2-12-(50/2) && mouseX <= ofGetWidth()/2-12+(50/2) && mouseY >= ofGetHeight()/2+42-(35/2) && mouseY <= ofGetHeight()/2+42+(35/2)) gameState++;
+        
+    }
+    
     if (gameState == 1) {
         
         // Destroy a distraction by clicking on it:
@@ -208,13 +275,18 @@ void testApp::mousePressed(int x, int y, int button){
             for (int i=0; i<myDistractions.size(); i++) {
                 if (ofDist(mouseX, mouseY, myDistractions[i].xPos, myDistractions[i].yPos) < myDistractions[i].wide/2) {
                     myDistractions[i].destroyMe = true;
+                    if (!chaos) chaos = true;
                 }
             }
             
         } // End if (powerOn).
         
         // Use the power button:
-        if (mouseX >= ofGetWidth()-ofGetWidth()/4-4-(55/2) && mouseX <= ofGetWidth()-ofGetWidth()/4-4+(55/2) && mouseY >= 7-(6/2) && mouseY <= 7+(6/2)) powerOn = !powerOn;
+        if (mouseX >= ofGetWidth()-ofGetWidth()/4-4-(55/2) && mouseX <= ofGetWidth()-ofGetWidth()/4-4+(55/2) && mouseY >= 7-(6/2) && mouseY <= 7+(6/2)) {
+            powerOn = !powerOn;
+            powerButton.a = 0;
+            aVel = 1;
+        }
         
     } // End gameState = 1.
     

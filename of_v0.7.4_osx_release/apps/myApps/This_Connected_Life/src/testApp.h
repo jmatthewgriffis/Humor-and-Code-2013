@@ -20,11 +20,12 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
     
-    int gameState, timer, verticalRez, frameRate, speedy, timeShifts, shiftLength, maxDistractions;
+    int gameState, timer, verticalRez, frameRate, speedy, timeShifts, shiftLength, maxDistractions, frameCount, aVel;
     float timerMax, increasePace;
-    bool powerOn;
+    bool powerOn, chaos;
     ofTrueTypeFont font, fontSmall;
     ofImage iPhone;
     vector<distraction> myDistractions;
+    ofColor powerButton;
     
 };
