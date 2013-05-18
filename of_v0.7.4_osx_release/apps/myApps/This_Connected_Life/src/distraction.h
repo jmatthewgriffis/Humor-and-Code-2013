@@ -13,14 +13,14 @@ class distraction {
     
 public:
     
-    void setup(float x, float y);
+    void setup(float x, float y, int v);
     void update();
     void draw();
     
     ofColor color;
     float xPos, yPos;
     int wide, tall, xVel, yVel, marginH, marginV;
-    bool collided;
+    bool collided, destroyMe;
     
 };
 

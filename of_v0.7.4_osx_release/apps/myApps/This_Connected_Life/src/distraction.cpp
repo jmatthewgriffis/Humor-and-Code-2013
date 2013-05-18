@@ -10,19 +10,19 @@
 #include "distraction.h"
 
 //--------------------------------------------------------------
-void distraction::setup(float x, float y) {
+void distraction::setup(float x, float y, int v) {
     
     color.r = 0;
     color.g = 0;
     color.b = 255;
     xPos = x;
     yPos = y;
-    xVel = yVel = 5;
+    xVel = yVel = v;
     wide = 50;
     tall = wide;
     marginH = 30; // Distance from sides of window to sides of iPhone screen.
     marginV = 105; // Distance from top/bottom of window to top/bottom of iPhone screen.
-    collided = false;
+    collided = destroyMe = false;
     
 }
 

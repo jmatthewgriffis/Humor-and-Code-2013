@@ -20,7 +20,7 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
     
-    int verticalRez;
+    int timer, timerMax, verticalRez, frameRate;
     bool drawbox;
     
     ofImage iPhone;

@@ -12,6 +12,7 @@ void testApp::setup(){
     ofSetCircleResolution(60);
     ofSetRectMode(OF_RECTMODE_CENTER);
     ofNoFill();
+    //ofSetDataPathRoot("data/"); // This is necessary to make a standalone app.
     
     gameFontBig.loadFont("bro.ttf", 24); // http://www.dafont.com/base-02.font?text=COME+AT+ME+BRO
     gameFontSmall.loadFont("bro.ttf", 12);
