@@ -20,8 +20,9 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
     
-    int timer, timerMax, verticalRez, frameRate;
-    bool drawbox;
+    int timer, verticalRez, frameRate, speedy, timeShifts, shiftLength, maxDistractions;
+    float timerMax, increasePace;
+    bool powerOn;
     
     ofImage iPhone;
     vector<distraction> myDistractions;
